@@ -150,45 +150,47 @@ export const LandingPage: React.FC = () => {
         </div>{/* end inner container */}
       </section>
 
-      {/* ── FEATURES SECTION (Perfect Separation: py-[120px], top border) ── */}
-      <section className="relative z-10 py-[120px] px-6 max-w-[1200px] mx-auto w-full border-t border-white/5">
-        <div className="text-center mb-[20px]">
-          <h2 className="text-4xl font-bold tracking-tight text-[#F8FAFC]">Everything You Need</h2>
-        </div>
-        <div className="text-center mb-[64px]">
-          <p className="text-[#94A3B8] text-lg max-w-xl mx-auto font-medium">
-            Research-grade AI tools for satellite imagery analysis.
-          </p>
-        </div>
+      {/* ── FEATURES SECTION ── */}
+      <section className="relative z-10 w-full border-t border-white/5">
+        <div className="max-w-[1200px] mx-auto px-6 py-[120px]">
+          <div className="text-center mb-5">
+            <h2 className="text-4xl font-bold tracking-tight text-[#F8FAFC]">Everything You Need</h2>
+          </div>
+          <div className="text-center mb-16">
+            <p className="text-[#94A3B8] text-lg max-w-xl mx-auto font-medium">
+              Research-grade AI tools for satellite imagery analysis.
+            </p>
+          </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[32px]">
-          {FEATURES.map(({ icon: Icon, title, desc }, i) => (
-            <motion.div
-              key={title}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-50px' }}
-              transition={{ duration: 0.5, delay: i * 0.08 }}
-              whileHover={{ y: -6, borderColor: 'rgba(16, 185, 129, 0.25)', boxShadow: '0 12px 30px -10px rgba(0, 0, 0, 0.5)' }}
-              className="glass rounded-2xl p-8 transition-all duration-300 group flex flex-col items-start border border-white/8"
-            >
-              <div className="w-[52px] h-[52px] rounded-xl flex items-center justify-center mb-6 bg-[#10B981]/10 group-hover:scale-110 transition-transform">
-                <Icon size={26} className="text-[#10B981]" />
-              </div>
-              <h3 className="text-xl font-bold text-[#F8FAFC] mb-3">{title}</h3>
-              <p className="text-[#94A3B8] text-sm leading-[1.6] font-medium">{desc}</p>
-            </motion.div>
-          ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {FEATURES.map(({ icon: Icon, title, desc }, i) => (
+              <motion.div
+                key={title}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-50px' }}
+                transition={{ duration: 0.5, delay: i * 0.08 }}
+                whileHover={{ y: -6, borderColor: 'rgba(16, 185, 129, 0.25)', boxShadow: '0 12px 30px -10px rgba(0, 0, 0, 0.5)' }}
+                className="glass rounded-2xl p-8 transition-all duration-300 group flex flex-col items-start border border-white/8"
+              >
+                <div className="w-[52px] h-[52px] rounded-xl flex items-center justify-center mb-6 bg-[#10B981]/10 group-hover:scale-110 transition-transform">
+                  <Icon size={26} className="text-[#10B981]" />
+                </div>
+                <h3 className="text-xl font-bold text-[#F8FAFC] mb-3">{title}</h3>
+                <p className="text-[#94A3B8] text-sm leading-[1.6] font-medium">{desc}</p>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* ── PIPELINE DIAGRAM ── */}
-      <section className="relative z-10 py-[120px] px-6 max-w-[1200px] mx-auto w-full border-t border-white/5">
-        <div className="max-w-4xl mx-auto text-center">
+      <section className="relative z-10 w-full border-t border-white/5">
+        <div className="max-w-[900px] mx-auto px-6 py-[120px] text-center">
           <h2 className="text-3xl font-bold tracking-tight mb-4 text-[#F8FAFC]">How It Works</h2>
           <p className="text-[#94A3B8] mb-16 text-base font-medium">End-to-end pipeline from image to insight</p>
           
-          <div className="flex flex-col md:flex-row items-center justify-between gap-8 md:gap-4">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-4">
             {[
               { step: '01', label: 'Upload Image', sub: 'Any satellite imagery' },
               { step: '02', label: 'AI Inference', sub: 'ResNet50 classification' },
@@ -197,7 +199,7 @@ export const LandingPage: React.FC = () => {
               { step: '05', label: 'PDF Report', sub: 'Download results' },
             ].map(({ step, label, sub }, i) => (
               <React.Fragment key={step}>
-                <div className="flex flex-col items-center text-center gap-2 group w-full md:w-auto">
+                <div className="flex flex-col items-center text-center gap-2 group">
                   <motion.div 
                     whileHover={{ scale: 1.1 }}
                     className="w-12 h-12 rounded-full bg-gradient-to-br from-[#10B981] to-[#34D399] flex items-center justify-center text-white font-bold text-sm shadow-[0_0_15px_rgba(16,185,129,0.2)]"
@@ -217,24 +219,26 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* ── FOOTER CTA SECTION ── */}
-      <section className="relative z-10 py-[120px] px-6 max-w-[1200px] mx-auto w-full">
-        <div className="max-w-[800px] mx-auto text-center glass rounded-3xl p-12 relative overflow-hidden border border-white/8">
-          <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-            <div className="absolute bottom-[-50px] right-[-50px] w-64 h-64 bg-[#10B981]/5 rounded-full blur-[80px]" />
-          </div>
-          
-          <div className="relative z-10">
-            <Leaf size={44} className="text-[#10B981] mx-auto mb-6 animate-float" />
-            <h2 className="text-3xl font-bold tracking-tight mb-4 text-[#F8FAFC]">Ready to Monitor Canopy Loss?</h2>
-            <p className="text-[#94A3B8] mb-8 text-base font-medium max-w-xl mx-auto">
-              Upload a satellite image and get AI-powered land cover classification and change detection maps in seconds.
-            </p>
-            <Link
-              to="/classify"
-              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-gradient-to-r from-[#10B981] to-[#34D399] text-white font-bold hover:shadow-[0_0_24px_rgba(16,185,129,0.35)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300"
-            >
-              Get Started Free <ArrowRight size={18} />
-            </Link>
+      <section className="relative z-10 w-full">
+        <div className="max-w-[900px] mx-auto px-6 py-[120px]">
+          <div className="text-center glass rounded-3xl p-12 relative overflow-hidden border border-white/8">
+            <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+              <div className="absolute bottom-[-50px] right-[-50px] w-64 h-64 bg-[#10B981]/5 rounded-full blur-[80px]" />
+            </div>
+            
+            <div className="relative z-10 flex flex-col items-center">
+              <Leaf size={44} className="text-[#10B981] mb-6 animate-float" />
+              <h2 className="text-3xl font-bold tracking-tight mb-4 text-[#F8FAFC] text-center">Ready to Monitor Canopy Loss?</h2>
+              <p className="text-[#94A3B8] mb-8 text-base font-medium max-w-xl text-center">
+                Upload a satellite image and get AI-powered land cover classification and change detection maps in seconds.
+              </p>
+              <Link
+                to="/classify"
+                className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-gradient-to-r from-[#10B981] to-[#34D399] text-white font-bold hover:shadow-[0_0_24px_rgba(16,185,129,0.35)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300"
+              >
+                Get Started Free <ArrowRight size={18} />
+              </Link>
+            </div>
           </div>
         </div>
       </section>
