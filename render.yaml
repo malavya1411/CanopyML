@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: canopyml-backend
+    env: docker
+    dockerfilePath: Dockerfile.backend
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: CORS_ORIGINS
+        value: '["https://canopyml.vercel.app"]'
+    disk:
+      name: models-and-reports
+      mountPath: /app/models
+      sizeGB: 1

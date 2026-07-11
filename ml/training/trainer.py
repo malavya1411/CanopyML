@@ -168,7 +168,7 @@ class Trainer:
         )
         scheduler   = ReduceLROnPlateau(
             optimizer, mode="max", factor=0.5,
-            patience=LR_SCHEDULER_PATIENCE, verbose=False,
+            patience=LR_SCHEDULER_PATIENCE,
         )
         patience_ctr = 0
         global_step  = len(self.history.get(history_key_loss, []))

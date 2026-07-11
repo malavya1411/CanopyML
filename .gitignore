@@ -1,0 +1,27 @@
+# macOS
+.DS_Store
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+backend/.env
+.pytest_cache/
+
+# Node.js / Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.npm/
+
+# CanopyML Specific Data & Outputs
+dataset/
+models/*.pth
+reports/*.pdf
+/tmp/canopyml_uploads/

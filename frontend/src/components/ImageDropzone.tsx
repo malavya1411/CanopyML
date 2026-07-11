@@ -64,36 +64,39 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            {...getRootProps()}
-            className={`
-              border-2 border-dashed rounded-xl p-10 text-center cursor-pointer
-              transition-all duration-200 select-none
-              ${isDragActive
-                ? 'border-[#2d8c4e] bg-[#2d8c4e]/10 dropzone-active'
-                : 'border-white/15 hover:border-[#2d8c4e]/60 hover:bg-white/2 bg-[#161b22]'
-              }
-            `}
           >
-            <input {...getInputProps()} />
-            <motion.div
-              animate={{ y: isDragActive ? -4 : 0 }}
-              className="flex flex-col items-center gap-3"
+            <div
+              {...getRootProps()}
+              className={`
+                border-2 border-dashed rounded-xl p-10 text-center cursor-pointer
+                transition-all duration-200 select-none
+                ${isDragActive
+                  ? 'border-[#2d8c4e] bg-[#2d8c4e]/10 dropzone-active'
+                  : 'border-white/15 hover:border-[#2d8c4e]/60 hover:bg-white/2 bg-[#161b22]'
+                }
+              `}
             >
-              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-colors ${
-                isDragActive ? 'bg-[#2d8c4e]/30' : 'bg-white/5'
-              }`}>
-                <Upload size={26} className={isDragActive ? 'text-[#3aad63]' : 'text-[#8b949e]'} />
-              </div>
-              <div>
-                <p className="text-[#e6edf3] font-medium">{label}</p>
-                <p className="text-[#8b949e] text-sm mt-1">
-                  PNG, JPG, JPEG, TIFF · Max 50 MB
-                </p>
-                <p className="text-[#2d8c4e] text-sm mt-2 font-medium">
-                  {isDragActive ? 'Release to upload' : 'Click to browse'}
-                </p>
-              </div>
-            </motion.div>
+              <input {...getInputProps()} />
+              <motion.div
+                animate={{ y: isDragActive ? -4 : 0 }}
+                className="flex flex-col items-center gap-3"
+              >
+                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-colors ${
+                  isDragActive ? 'bg-[#2d8c4e]/30' : 'bg-white/5'
+                }`}>
+                  <Upload size={26} className={isDragActive ? 'text-[#3aad63]' : 'text-[#8b949e]'} />
+                </div>
+                <div>
+                  <p className="text-[#e6edf3] font-medium">{label}</p>
+                  <p className="text-[#8b949e] text-sm mt-1">
+                    PNG, JPG, JPEG, TIFF · Max 50 MB
+                  </p>
+                  <p className="text-[#2d8c4e] text-sm mt-2 font-medium">
+                    {isDragActive ? 'Release to upload' : 'Click to browse'}
+                  </p>
+                </div>
+              </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

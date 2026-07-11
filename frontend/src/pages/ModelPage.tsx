@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
-import { BarChart3, Brain, Target, Cpu, Calendar, Database, CheckCircle, AlertTriangle } from 'lucide-react';
+import { BarChart3, Brain, Target, Cpu, CheckCircle, AlertTriangle } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { getModelInfo, getModelMetrics } from '../api';
 import { MetricsCard, MetricsCardSkeleton } from '../components/MetricsCard';
@@ -23,9 +23,6 @@ export const ModelPage: React.FC = () => {
   const curveData = React.useMemo(() => {
     const h = metrics?.training_history;
     if (!h) return [];
-    const maxLen = Math.max(
-      (h.stage_a_loss?.length || 0) + (h.stage_b_loss?.length || 0),
-    );
     const aLen = h.stage_a_loss?.length || 0;
     return [
       ...(h.stage_a_loss || []).map((loss: number, i: number) => ({

@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
-import { BarChart3, Brain, Cpu, Database, Activity, Image, Upload, TrendingDown } from 'lucide-react';
+import { Brain, Cpu, Database, Activity, Upload, TrendingDown } from 'lucide-react';
 import { getModelInfo, getHealth } from '../api';
 import { MetricsCard, MetricsCardSkeleton } from '../components/MetricsCard';
 import { CLASS_NAMES, CLASS_COLORS } from '../types';

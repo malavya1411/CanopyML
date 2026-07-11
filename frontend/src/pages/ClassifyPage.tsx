@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useQuery, useMutation } from '@tanstack/react-query';
-import { Brain, Download, AlertTriangle, CheckCircle, Loader2, FileText } from 'lucide-react';
+import { useMutation } from '@tanstack/react-query';
+import { Brain, FileText, AlertTriangle, CheckCircle, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 import { classifyImage, requestClassificationReport, getReportDownloadUrl } from '../api';

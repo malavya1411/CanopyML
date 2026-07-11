@@ -43,7 +43,7 @@ export const ConfidenceChart: React.FC<ConfidenceChartProps> = ({ probabilities,
           <PieChart>
             <Pie
               data={pieData} cx="50%" cy="50%" outerRadius={85}
-              dataKey="value" nameKey="name" label={({ name, value }) => `${value}%`}
+              dataKey="value" nameKey="name" label={({ value }) => `${value}%`}
               labelLine={false}
             >
               {pieData.map((entry, i) => (
