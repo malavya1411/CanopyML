@@ -125,9 +125,9 @@ export const LandingPage: React.FC = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="mt-12 w-full"
+            className="mt-20 w-full"
           >
-            <p className="text-center text-[#94A3B8]/50 text-[10px] mb-5 uppercase tracking-[0.25em] font-bold">
+            <p className="text-center text-[#94A3B8]/50 text-[10px] mb-7 uppercase tracking-[0.25em] font-bold">
               10 Land Cover Classes Supported
             </p>
             <div className="flex flex-wrap justify-center gap-3">
