@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMutation } from '@tanstack/react-query';
-import { Brain, FileText, AlertTriangle, CheckCircle2, Loader2, Sparkles } from 'lucide-react';
+import { Brain, FileText, AlertTriangle, CheckCircle2, Loader2, Sparkles, Crop } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 import { classifyImage, requestClassificationReport, getReportDownloadUrl } from '../api';
 import { ImageDropzone } from '../components/ImageDropzone';
 import { ConfidenceChart } from '../components/ConfidenceChart';
 import { PageHeader } from '../components/PageHeader';
+import { ImageGridCropper } from '../components/ImageGridCropper';
 
 const CLASS_COLORS: Record<string, string> = {
   AnnualCrop: '#f59e0b', Forest: '#22c55e', HerbaceousVegetation: '#84cc16',
@@ -17,6 +18,9 @@ const CLASS_COLORS: Record<string, string> = {
 
 export const ClassifyPage: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
+  const [rawFile, setRawFile] = useState<File | null>(null);
+  const [fileDimensions, setFileDimensions] = useState<{ width: number; height: number } | null>(null);
+  const [isCropping, setIsCropping] = useState(false);
 
   const { data, isPending, isError, error, mutate, reset } = useMutation({
     mutationFn: (f: File) => classifyImage(f),
@@ -35,8 +39,54 @@ export const ClassifyPage: React.FC = () => {
     onError: () => toast.error('Report generation failed.'),
   });
 
-  const handleClear = () => { setFile(null); reset(); };
-  const handleRun   = () => { if (file) mutate(file); };
+  const handleClear = () => {
+    setFile(null);
+    setRawFile(null);
+    setFileDimensions(null);
+    setIsCropping(false);
+    reset();
+  };
+  
+  const handleRun = () => { if (file) mutate(file); };
+
+  const handleFileSelect = (selectedFile: File) => {
+    setFile(selectedFile);
+    setRawFile(selectedFile);
+
+    // Read image dimensions
+    const img = new Image();
+    img.onload = () => {
+      setFileDimensions({ width: img.naturalWidth, height: img.naturalHeight });
+    };
+    img.src = URL.createObjectURL(selectedFile);
+  };
+
+  const handleAutoCropCenter = () => {
+    if (!file) return;
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 64;
+      canvas.height = 64;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        // Calculate center 64x64 coordinates
+        const startX = Math.max(0, Math.floor((img.naturalWidth - 64) / 2));
+        const startY = Math.max(0, Math.floor((img.naturalHeight - 64) / 2));
+        
+        ctx.drawImage(img, startX, startY, 64, 64, 0, 0, 64, 64);
+        canvas.toBlob((blob) => {
+          if (blob) {
+            const croppedFile = new File([blob], `center_crop_${file.name}`, { type: 'image/png' });
+            setFile(croppedFile);
+            setFileDimensions({ width: 64, height: 64 });
+            toast.success('Successfully auto-cropped center 64×64 patch!');
+          }
+        }, 'image/png');
+      }
+    };
+    img.src = URL.createObjectURL(file);
+  };
 
   const confidence_pct = data ? (data.confidence * 100).toFixed(1) : null;
   const classColor = data ? (CLASS_COLORS[data.predicted_class] || '#22c55e') : '#22c55e';
@@ -52,67 +102,141 @@ export const ClassifyPage: React.FC = () => {
           subtitle="Upload a satellite patch and get AI-powered land cover classification."
         />
 
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
-          gap: '20px',
-        }}>
-
-          {/* ── LEFT: Upload Panel ───────────────────────── */}
+        {isCropping && rawFile ? (
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-            style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
           >
-            {/* Drop zone card */}
-            <div className="surface" style={{ padding: '28px' }}>
-              <h2 style={{
-                fontFamily: "'Syne', sans-serif",
-                fontSize: '15px', fontWeight: 700,
-                color: '#eef2ec', marginBottom: '16px',
-              }}>
-                Upload Satellite Image
-              </h2>
+            <ImageGridCropper
+              imageFile={rawFile}
+              onCropConfirmed={(croppedFile) => {
+                setFile(croppedFile);
+                setRawFile(null);
+                setIsCropping(false);
+              }}
+              onCancel={() => {
+                setRawFile(null);
+                setIsCropping(false);
+              }}
+            />
+          </motion.div>
+        ) : (
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
+            gap: '20px',
+          }}>
 
-              <ImageDropzone onFile={setFile} file={file} onClear={handleClear} label="Drop a satellite patch here" />
-
-              {/* Stub model warning */}
-              {data?.is_stub_model && (
-                <div style={{
-                  marginTop: '14px', display: 'flex', alignItems: 'flex-start', gap: '10px',
-                  padding: '12px 14px', borderRadius: '10px',
-                  background: 'rgba(245, 158, 11, 0.08)',
-                  border: '1px solid rgba(245, 158, 11, 0.2)',
+            {/* ── LEFT: Upload Panel ───────────────────────── */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+              style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
+            >
+              {/* Drop zone card */}
+              <div className="surface" style={{ padding: '28px' }}>
+                <h2 style={{
+                  fontFamily: "'Syne', sans-serif",
+                  fontSize: '15px', fontWeight: 700,
+                  color: '#eef2ec', marginBottom: '16px',
                 }}>
-                  <AlertTriangle size={15} color="#fbbf24" style={{ flexShrink: 0, marginTop: '1px' }} />
-                  <p style={{ fontSize: '12px', color: '#fbbf24', lineHeight: 1.5 }}>
-                    Using untrained stub model — predictions are random. Run{' '}
-                    <code style={{ fontFamily: 'monospace', fontSize: '11px' }}>python scripts/train.py</code> to train.
-                  </p>
-                </div>
-              )}
+                  Upload Satellite Image
+                </h2>
 
-              {/* Classify button */}
-              <button
-                onClick={handleRun}
-                disabled={!file || isPending}
-                className="btn btn-primary"
-                style={{ width: '100%', marginTop: '16px', height: '48px', fontSize: '15px' }}
-              >
-                {isPending ? (
-                  <><Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> Classifying…</>
-                ) : (
-                  <><Brain size={18} /> Classify Image</>
+                <ImageDropzone onFile={handleFileSelect} file={file} onClear={handleClear} label="Drop a satellite patch here" />
+
+                {file && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setRawFile(file);
+                      setIsCropping(true);
+                    }}
+                    className="btn btn-secondary"
+                    style={{ width: '100%', marginTop: '12px', height: '40px', fontSize: '13px', display: 'flex', gap: '8px', alignItems: 'center', justifyContent: 'center' }}
+                  >
+                    <Crop size={15} /> Crop 64×64 Patch (Optional)
+                  </button>
                 )}
-              </button>
 
-              {isError && (
-                <p style={{ marginTop: '10px', color: '#f87171', fontSize: '13px', textAlign: 'center' }}>
-                  Error: {(error as Error)?.message || 'Unknown error'}
-                </p>
-              )}
-            </div>
+                {fileDimensions && (fileDimensions.width > 64 || fileDimensions.height > 64) && (
+                  <div style={{
+                    marginTop: '14px', display: 'flex', alignItems: 'flex-start', gap: '10px',
+                    padding: '12px 14px', borderRadius: '10px',
+                    background: 'rgba(245, 158, 11, 0.08)',
+                    border: '1px solid rgba(245, 158, 11, 0.2)',
+                  }}>
+                    <AlertTriangle size={15} color="#fbbf24" style={{ flexShrink: 0, marginTop: '2px' }} />
+                    <div style={{ fontSize: '12px', color: '#a8b4a0', lineHeight: 1.5 }}>
+                      <p style={{ color: '#fbbf24', fontWeight: 600, marginBottom: '2px' }}>
+                        Large Image Detected ({fileDimensions.width}×{fileDimensions.height})
+                      </p>
+                      <p style={{ marginBottom: '8px' }}>
+                        The model is trained on 64×64 patches. Resizing this large image directly causes scaling distortion (e.g., false "Residential" predictions).
+                      </p>
+                      <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setRawFile(file);
+                            setIsCropping(true);
+                          }}
+                          className="btn btn-secondary btn-sm"
+                          style={{ fontSize: '11px', height: '28px', padding: '0 12px', borderColor: 'rgba(34, 197, 94, 0.4)', color: '#4ade80', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}
+                        >
+                          <Crop size={11} /> Manual Crop Grid
+                        </button>
+                        <button
+                          type="button"
+                          onClick={handleAutoCropCenter}
+                          className="btn btn-secondary btn-sm"
+                          style={{ fontSize: '11px', height: '28px', padding: '0 12px' }}
+                        >
+                          Auto-Crop Center
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Stub model warning */}
+                {data?.is_stub_model && (
+                  <div style={{
+                    marginTop: '14px', display: 'flex', alignItems: 'flex-start', gap: '10px',
+                    padding: '12px 14px', borderRadius: '10px',
+                    background: 'rgba(245, 158, 11, 0.08)',
+                    border: '1px solid rgba(245, 158, 11, 0.2)',
+                  }}>
+                    <AlertTriangle size={15} color="#fbbf24" style={{ flexShrink: 0, marginTop: '1px' }} />
+                    <p style={{ fontSize: '12px', color: '#fbbf24', lineHeight: 1.5 }}>
+                      Using untrained stub model — predictions are random. Run{' '}
+                      <code style={{ fontFamily: 'monospace', fontSize: '11px' }}>python scripts/train.py</code> to train.
+                    </p>
+                  </div>
+                )}
+
+                {/* Classify button */}
+                <button
+                  onClick={handleRun}
+                  disabled={!file || isPending}
+                  className="btn btn-primary"
+                  style={{ width: '100%', marginTop: '16px', height: '48px', fontSize: '15px' }}
+                >
+                  {isPending ? (
+                    <><Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> Classifying…</>
+                  ) : (
+                    <><Brain size={18} /> Classify Image</>
+                  )}
+                </button>
+
+                {isError && (
+                  <p style={{ marginTop: '10px', color: '#f87171', fontSize: '13px', textAlign: 'center' }}>
+                    Error: {(error as Error)?.message || 'Unknown error'}
+                  </p>
+                )}
+              </div>
 
             {/* ── Result Card ──────────────────────────── */}
             <AnimatePresence>
@@ -313,7 +437,8 @@ export const ClassifyPage: React.FC = () => {
               </div>
             )}
           </motion.div>
-        </div>
+          </div>
+        )}
       </div>
 
       <style>{`

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDropzone } from 'react-dropzone';
 import { motion, AnimatePresence } from 'framer-motion';
-import { UploadCloud, X, FileImage, CheckCircle2 } from 'lucide-react';
+import { UploadCloud, X, FileImage, CheckCircle2, Maximize2 } from 'lucide-react';
 
 interface ImageDropzoneProps {
   onFile: (file: File) => void;
@@ -17,6 +17,7 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
   accept = ['.png', '.jpg', '.jpeg', '.tif', '.tiff'],
 }) => {
   const [preview, setPreview] = React.useState<string | null>(null);
+  const [showLightbox, setShowLightbox] = React.useState(false);
 
   React.useEffect(() => {
     if (!file) { setPreview(null); return; }
@@ -59,8 +60,17 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
               background: 'rgba(10, 25, 16, 0.6)',
             }}
           >
-            {/* Image preview */}
-            <div style={{ position: 'relative', paddingTop: '56%', overflow: 'hidden' }}>
+            {/* Image preview with hover zoom effect */}
+            <div 
+              onClick={() => setShowLightbox(true)}
+              style={{ 
+                position: 'relative', 
+                paddingTop: '56%', 
+                overflow: 'hidden', 
+                cursor: 'zoom-in',
+              }}
+              className="group"
+            >
               <img
                 src={preview}
                 alt="Preview"
@@ -68,12 +78,41 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
                   position: 'absolute', inset: 0,
                   width: '100%', height: '100%',
                   objectFit: 'cover',
+                  transition: 'transform 0.3s ease',
                 }}
+                className="group-hover:scale-105"
               />
-              {/* Success overlay */}
+              
+              {/* Hover overlay with Eye icon */}
+              <div style={{
+                position: 'absolute', inset: 0,
+                background: 'rgba(8, 14, 11, 0.4)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                gap: '8px',
+                opacity: 0,
+                transition: 'opacity 0.2s ease',
+              }}
+              className="group-hover:opacity-100"
+              >
+                <div style={{
+                  padding: '8px 12px',
+                  borderRadius: '20px',
+                  background: 'rgba(10, 20, 13, 0.9)',
+                  border: '1px solid rgba(34, 197, 94, 0.3)',
+                  display: 'flex', alignItems: 'center', gap: '6px',
+                  fontSize: '11px', fontWeight: 600, color: '#4ade80',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.5)',
+                }}>
+                  <Maximize2 size={12} />
+                  Preview Image
+                </div>
+              </div>
+
+              {/* Success gradient overlay */}
               <div style={{
                 position: 'absolute', inset: 0,
                 background: 'linear-gradient(to bottom, transparent 50%, rgba(8,14,11,0.9) 100%)',
+                pointerEvents: 'none',
               }} />
             </div>
 
@@ -217,6 +256,80 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
               ))}
             </div>
             </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Lightbox Modal */}
+      <AnimatePresence>
+        {showLightbox && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowLightbox(false)}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              zIndex: 1000,
+              background: 'rgba(5, 10, 7, 0.92)',
+              backdropFilter: 'blur(16px)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '24px',
+              cursor: 'zoom-out',
+            }}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 250 }}
+              style={{
+                position: 'relative',
+                maxWidth: '90%',
+                maxHeight: '90%',
+                borderRadius: '16px',
+                border: '1px solid rgba(255,255,255,0.08)',
+                overflow: 'hidden',
+                boxShadow: '0 24px 64px rgba(0,0,0,0.8)',
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <img
+                src={preview || ''}
+                alt="Full resolution preview"
+                style={{
+                  display: 'block',
+                  maxWidth: '100%',
+                  maxHeight: '80vh',
+                  objectFit: 'contain',
+                }}
+              />
+              
+              {/* Close Button & File Name Info */}
+              <div style={{
+                position: 'absolute', bottom: 0, left: 0, right: 0,
+                background: 'linear-gradient(to top, rgba(8,14,11,0.95) 0%, transparent 100%)',
+                padding: '24px 20px 20px',
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+              }}>
+                <span style={{ fontSize: '13px', fontWeight: 600, color: '#eef2ec' }}>
+                  {file?.name}
+                </span>
+                <button
+                  onClick={() => setShowLightbox(false)}
+                  className="btn btn-secondary btn-sm"
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: '6px',
+                    borderColor: 'rgba(255,255,255,0.1)',
+                  }}
+                >
+                  <X size={14} /> Close
+                </button>
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
