@@ -60,88 +60,94 @@ export const LandingPage: React.FC = () => {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
       </div>
 
-      {/* ── HERO SECTION (Strict Centered Flex Layout, Starts at pt-[140px] to clear navbar) ── */}
-      <section className="relative z-10 min-h-[90vh] flex flex-col justify-center items-center pt-[140px] pb-[120px] px-6 max-w-[1100px] mx-auto w-full">
-        {/* Leaf Tag */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass text-[#34D399] text-xs font-semibold uppercase tracking-wider mb-8"
-        >
-          <Leaf size={12} className="animate-float" />
-          Research-Grade AI Satellite Platform
-        </motion.div>
+      {/* ── HERO SECTION ── */}
+      <section className="relative z-10 w-full min-h-[90vh] flex flex-col justify-center items-center pt-[140px] pb-[120px] px-6">
 
-        {/* Heading (Responsively sized, max two lines, wraps naturally) */}
-        <motion.h1
-          initial={{ opacity: 0, y: 25 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-[40px] md:text-[56px] lg:text-[72px] font-extrabold tracking-tight leading-[1.05] text-center max-w-[900px] w-full"
-        >
-          Detect <span className="bg-gradient-to-r from-[#10B981] to-[#34D399] bg-clip-text text-transparent">Deforestation</span> From Space
-        </motion.h1>
+        {/* Inner centered container, constrains content width */}
+        <div className="w-full max-w-[900px] mx-auto flex flex-col items-center text-center">
 
-        {/* Subtitle */}
-        <motion.p
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="mt-[32px] text-lg md:text-xl text-[#94A3B8] text-center max-w-[720px] leading-[1.7] font-medium opacity-75"
-        >
-          CanopyML uses deep learning (ResNet50 + Transfer Learning) to classify
-          satellite imagery into 10 land cover classes and automatically detect
-          forest loss between two time periods.
-        </motion.p>
-
-        {/* Action Buttons */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="mt-[40px] flex flex-wrap gap-[16px] justify-center items-center w-full"
-        >
-          <Link
-            to="/classify"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-gradient-to-r from-[#10B981] to-[#34D399] text-white font-bold hover:shadow-[0_0_24px_rgba(16,185,129,0.35)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 text-base animate-none"
+          {/* Leaf Tag */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass text-[#34D399] text-xs font-semibold uppercase tracking-wider mb-8"
           >
-            Try Demo — Classify Image <ArrowRight size={18} />
-          </Link>
-          <Link
-            to="/deforestation"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl glass text-[#F8FAFC] font-bold hover:bg-white/5 hover:border-white/20 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 text-base"
-          >
-            Detect Deforestation <GitCompare size={18} />
-          </Link>
-        </motion.div>
+            <Leaf size={12} className="animate-float" />
+            Research-Grade AI Satellite Platform
+          </motion.div>
 
-        {/* Class Chips */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="mt-[48px] w-full max-w-[900px]"
-        >
-          <p className="text-center text-[#94A3B8]/60 text-[11px] mb-6 uppercase tracking-[0.2em] font-bold">
-            10 Land Cover Classes Supported
-          </p>
-          <div className="flex flex-wrap justify-center gap-[12px]">
-            {CLASSES.map(({ name, color }, i) => (
-              <motion.span
-                key={name}
-                initial={{ opacity: 0, scale: 0.85 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.4, delay: 0.4 + i * 0.04 }}
-                whileHover={{ y: -2, backgroundColor: 'rgba(255, 255, 255, 0.08)' }}
-                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold glass text-[#F8FAFC] transition-colors cursor-default"
-              >
-                <span className="w-2 h-2 rounded-full" style={{ background: color }} />
-                <span>{name}</span>
-              </motion.span>
-            ))}
-          </div>
-        </motion.div>
+          {/* Heading - constrained to avoid overflow */}
+          <motion.h1
+            initial={{ opacity: 0, y: 25 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-[1.1] text-center w-full"
+          >
+            Detect <span className="bg-gradient-to-r from-[#10B981] to-[#34D399] bg-clip-text text-transparent">Deforestation</span> From Space
+          </motion.h1>
+
+          {/* Subtitle */}
+          <motion.p
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="mt-8 text-base md:text-lg text-[#94A3B8] text-center max-w-[680px] leading-[1.75] font-medium"
+          >
+            CanopyML uses deep learning (ResNet50 + Transfer Learning) to classify
+            satellite imagery into 10 land cover classes and automatically detect
+            forest loss between two time periods.
+          </motion.p>
+
+          {/* Action Buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center"
+          >
+            <Link
+              to="/classify"
+              className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-gradient-to-r from-[#10B981] to-[#34D399] text-white font-bold text-base hover:shadow-[0_0_24px_rgba(16,185,129,0.35)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300"
+            >
+              Try Demo — Classify Image <ArrowRight size={18} />
+            </Link>
+            <Link
+              to="/deforestation"
+              className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl glass text-[#F8FAFC] font-bold text-base hover:bg-white/5 hover:border-white/20 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300"
+            >
+              Detect Deforestation <GitCompare size={18} />
+            </Link>
+          </motion.div>
+
+          {/* Class Chips */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="mt-12 w-full"
+          >
+            <p className="text-center text-[#94A3B8]/50 text-[10px] mb-5 uppercase tracking-[0.25em] font-bold">
+              10 Land Cover Classes Supported
+            </p>
+            <div className="flex flex-wrap justify-center gap-3">
+              {CLASSES.map(({ name, color }, i) => (
+                <motion.span
+                  key={name}
+                  initial={{ opacity: 0, scale: 0.85 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.4, delay: 0.4 + i * 0.04 }}
+                  whileHover={{ y: -2, backgroundColor: 'rgba(255, 255, 255, 0.08)' }}
+                  className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold glass text-[#F8FAFC] transition-colors cursor-default"
+                >
+                  <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: color }} />
+                  <span>{name}</span>
+                </motion.span>
+              ))}
+            </div>
+          </motion.div>
+
+        </div>{/* end inner container */}
       </section>
 
       {/* ── FEATURES SECTION (Perfect Separation: py-[120px], top border) ── */}
