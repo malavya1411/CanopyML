@@ -19,13 +19,13 @@ export const Navbar: React.FC = () => {
       initial={{ y: -60, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.4 }}
-      className="fixed top-0 left-0 right-0 z-50 glass border-b border-white/10"
+      className="fixed top-0 left-0 right-0 z-50 glass border-b border-white/8"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+      <div className="max-w-[1200px] mx-auto px-6">
+        <div className="flex items-center justify-between h-[72px]">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#2d8c4e] to-[#00b4a6] flex items-center justify-center group-hover:scale-110 transition-transform">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#10B981] to-[#34D399] flex items-center justify-center group-hover:scale-110 transition-transform">
               <Leaf size={16} className="text-white" />
             </div>
             <span className="font-bold text-lg gradient-text">CanopyML</span>
@@ -40,8 +40,8 @@ export const Navbar: React.FC = () => {
                 className={({ isActive }) =>
                   `flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                     isActive
-                      ? 'bg-[#2d8c4e]/20 text-[#3aad63]'
-                      : 'text-[#8b949e] hover:text-[#e6edf3] hover:bg-white/5'
+                      ? 'bg-[#10B981]/15 text-[#34D399]'
+                      : 'text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-white/5'
                   }`
                 }
               >
@@ -55,7 +55,7 @@ export const Navbar: React.FC = () => {
           <div className="hidden md:flex items-center gap-3">
             <Link
               to="/classify"
-              className="px-4 py-1.5 rounded-lg bg-gradient-to-r from-[#2d8c4e] to-[#00b4a6] text-white text-sm font-semibold hover:opacity-90 transition-opacity"
+              className="px-4 py-1.5 rounded-lg bg-gradient-to-r from-[#10B981] to-[#34D399] text-white text-sm font-semibold hover:opacity-90 transition-opacity"
             >
               Try Demo
             </Link>
@@ -85,7 +85,7 @@ export const Navbar: React.FC = () => {
               onClick={() => setOpen(false)}
               className={({ isActive }) =>
                 `flex items-center gap-2 w-full px-3 py-2.5 rounded-lg text-sm font-medium mt-1 ${
-                  isActive ? 'bg-[#2d8c4e]/20 text-[#3aad63]' : 'text-[#8b949e]'
+                  isActive ? 'bg-[#10B981]/15 text-[#34D399]' : 'text-[#94A3B8]'
                 }`
               }
             >
