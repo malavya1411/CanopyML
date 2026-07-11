@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
-import { BarChart3, Brain, Target, Cpu, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { BarChart3, Target, CheckCircle2, AlertTriangle } from 'lucide-react';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid,
   Tooltip, Legend, ResponsiveContainer,
@@ -114,18 +114,21 @@ export const ModelPage: React.FC = () => {
         {/* ── Metrics Cards ──────────────────────────────── */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))',
+          gridTemplateColumns: '1fr',
           gap: '16px', marginBottom: '24px',
         }}>
           {infoLoading || metricsLoading ? (
-            Array.from({ length: 4 }).map((_, i) => <MetricsCardSkeleton key={i} />)
+            <MetricsCardSkeleton />
           ) : (
-            <>
-              <MetricsCard label="Test Accuracy" value={info?.accuracy ? `${(info.accuracy * 100).toFixed(1)}` : 'N/A'} suffix={info?.accuracy ? '%' : ''} icon={Target}   color="#22c55e"  delay={0}    />
-              <MetricsCard label="Precision"     value={info?.precision ? `${(info.precision * 100).toFixed(1)}` : 'N/A'} suffix={info?.precision ? '%' : ''} icon={Brain}    color="#06b6d4"  delay={0.08}  />
-              <MetricsCard label="Recall"        value={info?.recall    ? `${(info.recall * 100).toFixed(1)}` : 'N/A'}    suffix={info?.recall ? '%' : ''}    icon={BarChart3} color="#f59e0b" delay={0.16} />
-              <MetricsCard label="F1-Score"      value={info?.f1_score  ? `${(info.f1_score * 100).toFixed(1)}` : 'N/A'}  suffix={info?.f1_score ? '%' : ''}  icon={Cpu}       color="#f87171" delay={0.24} />
-            </>
+            <MetricsCard
+              label="Overall Model Accuracy"
+              value={info?.accuracy ? `${(info.accuracy * 100).toFixed(1)}` : 'N/A'}
+              suffix={info?.accuracy ? '%' : ''}
+              icon={Target}
+              color="#22c55e"
+              delay={0}
+              subtitle={info?.is_stub ? 'Untrained stub model' : 'Average accuracy score evaluated across a held-out test set of 2,700 sentinel patches.'}
+            />
           )}
         </div>
 
