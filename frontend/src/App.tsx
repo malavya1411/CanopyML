@@ -17,8 +17,7 @@ export const App: React.FC = () => {
   return (
     <>
       <Navbar />
-      
-      {/* Framer motion page transitions wrapper */}
+
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
           <Route path="/"              element={<LandingPage />} />
@@ -31,18 +30,26 @@ export const App: React.FC = () => {
         </Routes>
       </AnimatePresence>
 
-      <Toaster 
+      <Toaster
         position="bottom-right"
         toastOptions={{
-          className: 'glass text-sm text-[#e6edf3]',
           style: {
-            background: '#161b22',
-            color: '#e6edf3',
-            border: '1px solid rgba(255,255,255,0.1)',
-            backdropFilter: 'blur(16px)',
+            background: 'rgba(10, 20, 13, 0.95)',
+            color: '#eef2ec',
+            border: '1px solid rgba(34, 197, 94, 0.2)',
+            backdropFilter: 'blur(20px)',
+            borderRadius: '12px',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+            fontSize: '14px',
+            fontFamily: "'Inter', system-ui, sans-serif",
           },
-          success: { iconTheme: { primary: '#2d8c4e', secondary: '#fff' } },
-          error:   { iconTheme: { primary: '#ef5350', secondary: '#fff' } },
+          success: {
+            iconTheme: { primary: '#4ade80', secondary: '#052e16' },
+          },
+          error: {
+            iconTheme: { primary: '#f87171', secondary: '#1a0000' },
+          },
+          duration: 3500,
         }}
       />
     </>

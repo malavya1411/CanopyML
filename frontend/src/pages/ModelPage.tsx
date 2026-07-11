@@ -1,10 +1,14 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
-import { BarChart3, Brain, Target, Cpu, CheckCircle, AlertTriangle } from 'lucide-react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { BarChart3, Brain, Target, Cpu, CheckCircle2, AlertTriangle } from 'lucide-react';
+import {
+  LineChart, Line, XAxis, YAxis, CartesianGrid,
+  Tooltip, Legend, ResponsiveContainer,
+} from 'recharts';
 import { getModelInfo, getModelMetrics } from '../api';
 import { MetricsCard, MetricsCardSkeleton } from '../components/MetricsCard';
+import { PageHeader } from '../components/PageHeader';
 
 export const ModelPage: React.FC = () => {
   const { data: info, isLoading: infoLoading } = useQuery({
@@ -19,7 +23,6 @@ export const ModelPage: React.FC = () => {
     refetchInterval: 60_000,
   });
 
-  // Build training curve data from history
   const curveData = React.useMemo(() => {
     const h = metrics?.training_history;
     if (!h) return [];
@@ -34,132 +37,230 @@ export const ModelPage: React.FC = () => {
     ];
   }, [metrics]);
 
+  const INFO_PANELS = [
+    {
+      title: 'Architecture',
+      rows: [
+        ['Backbone',  'ResNet50 (ImageNet)'],
+        ['Head',      'Dropout(0.3) + Linear(2048, 10)'],
+        ['Classes',   String(info?.num_classes ?? 10)],
+        ['Device',    info?.device ?? '—'],
+      ],
+    },
+    {
+      title: 'Training Config',
+      rows: [
+        ['Stage A lr',  '0.001'],
+        ['Stage B lr',  '0.0001'],
+        ['Optimizer',   'Adam + ReduceLROnPlateau'],
+        ['Early Stop',  'Patience = 5'],
+      ],
+    },
+    {
+      title: 'Dataset',
+      rows: [
+        ['Name',          'EuroSAT RGB'],
+        ['Total Images',  '27,000'],
+        ['Split',         '80 / 10 / 10'],
+        ['Version',       info?.dataset_version ?? 'EuroSAT-RGB-v2'],
+      ],
+    },
+  ];
+
   return (
     <div className="page-shell">
       <div className="page-container">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="icon-tile h-10 w-10 bg-[#00b4a6]/15">
-              <BarChart3 size={20} className="text-[#00b4a6]" />
-            </div>
-            <h1 className="text-3xl font-bold gradient-text">Model Information</h1>
-          </div>
-          <p className="text-[#8b949e]">ResNet50 training metrics, evaluation results, and architecture details.</p>
-        </motion.div>
+        <PageHeader
+          icon={BarChart3}
+          iconColor="#06b6d4"
+          iconBg="rgba(6, 182, 212, 0.1)"
+          title="Analytics & Model"
+          subtitle="ResNet50 training metrics, evaluation results, and architecture details."
+        />
 
-        <div className="mb-8 space-y-6">
-          {/* Status banner */}
-          {info && (
+        {/* ── Status Banner ──────────────────────────────── */}
+        {info && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            style={{
+              display: 'flex', alignItems: 'flex-start', gap: '12px',
+              padding: '14px 18px', borderRadius: '12px', marginBottom: '24px',
+              background: info.is_stub ? 'rgba(245, 158, 11, 0.07)' : 'rgba(34, 197, 94, 0.07)',
+              border: info.is_stub ? '1px solid rgba(245, 158, 11, 0.2)' : '1px solid rgba(34, 197, 94, 0.2)',
+            }}
+          >
+            {info.is_stub
+              ? <AlertTriangle size={16} color="#fbbf24" style={{ flexShrink: 0, marginTop: '2px' }} />
+              : <CheckCircle2 size={16} color="#4ade80" style={{ flexShrink: 0, marginTop: '2px' }} />
+            }
+            <div>
+              <p style={{
+                fontSize: '13px', fontWeight: 600, marginBottom: '2px',
+                color: info.is_stub ? '#fbbf24' : '#4ade80',
+              }}>
+                {info.is_stub ? 'Stub Model (Untrained)' : 'Trained Model Loaded'}
+              </p>
+              <p style={{ fontSize: '12px', color: '#687268' }}>
+                {info.is_stub
+                  ? 'Run python scripts/train.py to train the model. Predictions are random until trained.'
+                  : `Running on ${info.device} | Trained on ${info.dataset_version}`
+                }
+              </p>
+            </div>
+          </motion.div>
+        )}
+
+        {/* ── Metrics Cards ──────────────────────────────── */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))',
+          gap: '16px', marginBottom: '24px',
+        }}>
+          {infoLoading || metricsLoading ? (
+            Array.from({ length: 4 }).map((_, i) => <MetricsCardSkeleton key={i} />)
+          ) : (
+            <>
+              <MetricsCard label="Test Accuracy" value={info?.accuracy ? `${(info.accuracy * 100).toFixed(1)}` : 'N/A'} suffix={info?.accuracy ? '%' : ''} icon={Target}   color="#22c55e"  delay={0}    />
+              <MetricsCard label="Precision"     value={info?.precision ? `${(info.precision * 100).toFixed(1)}` : 'N/A'} suffix={info?.precision ? '%' : ''} icon={Brain}    color="#06b6d4"  delay={0.08}  />
+              <MetricsCard label="Recall"        value={info?.recall    ? `${(info.recall * 100).toFixed(1)}` : 'N/A'}    suffix={info?.recall ? '%' : ''}    icon={BarChart3} color="#f59e0b" delay={0.16} />
+              <MetricsCard label="F1-Score"      value={info?.f1_score  ? `${(info.f1_score * 100).toFixed(1)}` : 'N/A'}  suffix={info?.f1_score ? '%' : ''}  icon={Cpu}       color="#f87171" delay={0.24} />
+            </>
+          )}
+        </div>
+
+        {/* ── Info Panels ────────────────────────────────── */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+          gap: '16px', marginBottom: '24px',
+        }}>
+          {INFO_PANELS.map(({ title, rows }) => (
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className={`flex items-start gap-3 rounded-lg border p-4 ${
-                info.is_stub
-                  ? 'bg-amber-500/10 border-amber-500/30'
-                  : 'bg-[#2d8c4e]/10 border-[#2d8c4e]/30'
-              }`}
+              key={title}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="surface"
+              style={{ padding: '24px' }}
             >
-              {info.is_stub
-                ? <AlertTriangle size={18} className="mt-1 flex-shrink-0 text-amber-400" />
-                : <CheckCircle size={18} className="mt-1 flex-shrink-0 text-[#3aad63]" />}
-              <div className="min-w-0">
-                <p className={`font-medium ${info.is_stub ? 'text-amber-400' : 'text-[#3aad63]'}`}>
-                  {info.is_stub ? 'Stub Model (Untrained)' : 'Trained Model Loaded'}
-                </p>
-                <p className="break-words text-sm text-[#8b949e]">
-                  {info.is_stub
-                    ? 'Run python scripts/train.py to train the model. Predictions are random until trained.'
-                    : `Running on ${info.device} | Trained on ${info.dataset_version}`}
-                </p>
+              <p className="label-caps" style={{ marginBottom: '16px' }}>{title}</p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {rows.map(([k, v]) => (
+                  <div key={k} style={{ display: 'flex', justifyContent: 'space-between', gap: '12px' }}>
+                    <span style={{ fontSize: '13px', color: '#687268' }}>{k}</span>
+                    <span style={{
+                      fontSize: k === 'Head' ? '11px' : '13px',
+                      fontWeight: 600, color: '#eef2ec',
+                      textAlign: 'right',
+                      fontFamily: k === 'Backbone' || k === 'Head' || k === 'Device' || k === 'Version' ? "'JetBrains Mono', monospace" : 'inherit',
+                    } as React.CSSProperties}>
+                      {v}
+                    </span>
+                  </div>
+                ))}
               </div>
             </motion.div>
-          )}
-
-          {/* Metrics cards */}
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
-            {infoLoading || metricsLoading ? (
-              Array.from({ length: 4 }).map((_, i) => <MetricsCardSkeleton key={i} />)
-            ) : (
-              <>
-                <MetricsCard label="Test Accuracy"   value={info?.accuracy  ? `${(info.accuracy  * 100).toFixed(1)}` : 'N/A'} suffix={info?.accuracy ? '%' : ''} icon={Target}   color="#2d8c4e" delay={0}   />
-                <MetricsCard label="Precision"       value={info?.precision ? `${(info.precision * 100).toFixed(1)}` : 'N/A'} suffix={info?.precision ? '%' : ''} icon={Brain}    color="#00b4a6" delay={0.1} />
-                <MetricsCard label="Recall"          value={info?.recall    ? `${(info.recall    * 100).toFixed(1)}` : 'N/A'} suffix={info?.recall ? '%' : ''}    icon={BarChart3} color="#f9a825" delay={0.2} />
-                <MetricsCard label="F1-Score"        value={info?.f1_score  ? `${(info.f1_score  * 100).toFixed(1)}` : 'N/A'} suffix={info?.f1_score ? '%' : ''} icon={Cpu}      color="#ef5350" delay={0.3} />
-              </>
-            )}
-          </div>
+          ))}
         </div>
 
-        {/* Info cards row */}
-        <div className="mb-8 grid grid-cols-1 gap-6 xl:grid-cols-3">
-          <div className="surface p-6 max-sm:p-5">
-            <p className="text-[#8b949e] text-xs uppercase tracking-widest mb-3">Architecture</p>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between gap-4"><span className="text-[#8b949e]">Backbone</span><span className="text-right font-medium text-[#e6edf3]">ResNet50 (ImageNet)</span></div>
-              <div className="flex justify-between gap-4"><span className="text-[#8b949e]">Head</span><span className="text-right font-medium text-[#e6edf3]">Dropout(0.3) + Linear(2048,10)</span></div>
-              <div className="flex justify-between gap-4"><span className="text-[#8b949e]">Classes</span><span className="text-right font-medium text-[#e6edf3]">{info?.num_classes ?? 10}</span></div>
-              <div className="flex justify-between gap-4"><span className="text-[#8b949e]">Device</span><span className="text-right font-medium text-[#e6edf3]">{info?.device ?? '—'}</span></div>
-            </div>
-          </div>
-          <div className="surface p-6 max-sm:p-5">
-            <p className="text-[#8b949e] text-xs uppercase tracking-widest mb-3">Training Config</p>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between gap-4"><span className="text-[#8b949e]">Stage A lr</span><span className="text-right font-medium text-[#e6edf3]">0.001</span></div>
-              <div className="flex justify-between gap-4"><span className="text-[#8b949e]">Stage B lr</span><span className="text-right font-medium text-[#e6edf3]">0.0001</span></div>
-              <div className="flex justify-between gap-4"><span className="text-[#8b949e]">Optimizer</span><span className="text-right font-medium text-[#e6edf3]">Adam + ReduceLROnPlateau</span></div>
-              <div className="flex justify-between gap-4"><span className="text-[#8b949e]">Early Stop</span><span className="text-right font-medium text-[#e6edf3]">Patience = 5</span></div>
-            </div>
-          </div>
-          <div className="surface p-6 max-sm:p-5">
-            <p className="text-[#8b949e] text-xs uppercase tracking-widest mb-3">Dataset</p>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between gap-4"><span className="text-[#8b949e]">Name</span><span className="text-right font-medium text-[#e6edf3]">EuroSAT RGB</span></div>
-              <div className="flex justify-between gap-4"><span className="text-[#8b949e]">Total Images</span><span className="text-right font-medium text-[#e6edf3]">27,000</span></div>
-              <div className="flex justify-between gap-4"><span className="text-[#8b949e]">Split</span><span className="text-right font-medium text-[#e6edf3]">80 / 10 / 10</span></div>
-              <div className="flex justify-between gap-4"><span className="text-[#8b949e]">Version</span><span className="text-right font-medium text-[#e6edf3]">{info?.dataset_version ?? 'EuroSAT-RGB-v2'}</span></div>
-            </div>
-          </div>
-        </div>
-
-        {/* Training curves */}
+        {/* ── Training Curves ────────────────────────────── */}
         {curveData.length > 0 && (
-          <div className="surface p-6 mb-8">
-            <h2 className="font-semibold text-[#e6edf3] mb-6">Training Curves</h2>
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="surface"
+            style={{ padding: '28px', marginBottom: '24px' }}
+          >
+            <h2 style={{
+              fontFamily: "'Syne', sans-serif",
+              fontSize: '15px', fontWeight: 700,
+              color: '#eef2ec', marginBottom: '24px',
+            }}>
+              Training Curves
+            </h2>
             <ResponsiveContainer width="100%" height={280}>
               <LineChart data={curveData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                <XAxis dataKey="epoch" tick={{ fill: '#8b949e', fontSize: 11 }} label={{ value: 'Epoch', position: 'insideBottom', offset: -2, fill: '#8b949e' }} />
-                <YAxis yAxisId="left"  tick={{ fill: '#8b949e', fontSize: 11 }} label={{ value: 'Loss', angle: -90, position: 'insideLeft', fill: '#8b949e' }} />
-                <YAxis yAxisId="right" orientation="right" tick={{ fill: '#8b949e', fontSize: 11 }} domain={[0, 100]} label={{ value: 'Val Acc %', angle: 90, position: 'insideRight', fill: '#8b949e' }} />
-                <Tooltip contentStyle={{ background: '#161b22', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8 }} labelStyle={{ color: '#e6edf3' }} />
-                <Legend formatter={(v) => <span className="text-[#8b949e] text-xs">{v}</span>} />
-                <Line yAxisId="left"  type="monotone" dataKey="loss"    stroke="#ef5350" name="Train Loss"   dot={false} strokeWidth={2} />
-                <Line yAxisId="right" type="monotone" dataKey="val_acc" stroke="#2d8c4e" name="Val Acc (%)" dot={false} strokeWidth={2} />
+                <XAxis
+                  dataKey="epoch"
+                  tick={{ fill: '#687268', fontSize: 11 }}
+                  axisLine={{ stroke: 'rgba(255,255,255,0.05)' }}
+                  tickLine={false}
+                  label={{ value: 'Epoch', position: 'insideBottom', offset: -4, fill: '#687268', fontSize: 11 }}
+                />
+                <YAxis
+                  yAxisId="left"
+                  tick={{ fill: '#687268', fontSize: 11 }}
+                  axisLine={false} tickLine={false}
+                  label={{ value: 'Loss', angle: -90, position: 'insideLeft', fill: '#687268', fontSize: 11 }}
+                />
+                <YAxis
+                  yAxisId="right" orientation="right"
+                  domain={[0, 100]}
+                  tick={{ fill: '#687268', fontSize: 11 }}
+                  axisLine={false} tickLine={false}
+                  label={{ value: 'Val Acc %', angle: 90, position: 'insideRight', fill: '#687268', fontSize: 11 }}
+                />
+                <Tooltip
+                  contentStyle={{
+                    background: 'rgba(8, 14, 11, 0.97)',
+                    border: '1px solid rgba(34, 197, 94, 0.2)',
+                    borderRadius: '10px',
+                    boxShadow: '0 8px 24px rgba(0,0,0,0.5)',
+                  }}
+                  labelStyle={{ color: '#eef2ec', fontWeight: 600 }}
+                />
+                <Legend
+                  formatter={(v) => (
+                    <span style={{ color: '#a8b4a0', fontSize: '12px' }}>{v}</span>
+                  )}
+                />
+                <Line yAxisId="left"  type="monotone" dataKey="loss"    stroke="#f87171" name="Train Loss"   dot={false} strokeWidth={2} />
+                <Line yAxisId="right" type="monotone" dataKey="val_acc" stroke="#4ade80" name="Val Acc (%)" dot={false} strokeWidth={2} />
               </LineChart>
             </ResponsiveContainer>
-          </div>
+          </motion.div>
         )}
 
-        {/* Confusion matrix */}
+        {/* ── Confusion Matrix ───────────────────────────── */}
         {metrics?.confusion_matrix_png && (
-          <div className="surface p-6">
-            <h2 className="font-semibold text-[#e6edf3] mb-4">Confusion Matrix</h2>
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.35 }}
+            className="surface"
+            style={{ padding: '28px' }}
+          >
+            <h2 style={{
+              fontFamily: "'Syne', sans-serif",
+              fontSize: '15px', fontWeight: 700,
+              color: '#eef2ec', marginBottom: '16px',
+            }}>
+              Confusion Matrix
+            </h2>
             <img
               src={`data:image/png;base64,${metrics.confusion_matrix_png}`}
-              alt="confusion matrix"
-              className="w-full rounded-lg"
+              alt="Confusion matrix"
+              style={{ width: '100%', borderRadius: '10px', display: 'block' }}
             />
-          </div>
+          </motion.div>
         )}
 
         {/* No data state */}
         {!metricsLoading && !metrics?.confusion_matrix_png && curveData.length === 0 && (
-          <div className="surface p-10 text-center">
-            <BarChart3 size={48} className="text-[#8b949e] mx-auto mb-4" />
-            <p className="text-[#8b949e]">
-              No evaluation data yet. Run{' '}
-              <code className="text-[#3aad63] font-mono">python scripts/train.py</code> then{' '}
-              <code className="text-[#3aad63] font-mono">python scripts/evaluate.py</code> to generate metrics.
+          <div className="surface" style={{
+            padding: '48px', textAlign: 'center',
+          }}>
+            <BarChart3 size={48} color="#687268" style={{ margin: '0 auto 16px' }} />
+            <p style={{ color: '#a8b4a0', fontWeight: 600, marginBottom: '6px' }}>No evaluation data yet</p>
+            <p style={{ color: '#687268', fontSize: '13px' }}>
+              Run{' '}
+              <code style={{ color: '#4ade80', fontFamily: 'monospace' }}>python scripts/train.py</code>
+              {' '}then{' '}
+              <code style={{ color: '#4ade80', fontFamily: 'monospace' }}>python scripts/evaluate.py</code>
+              {' '}to generate metrics.
             </p>
           </div>
         )}

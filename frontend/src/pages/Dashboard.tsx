@@ -2,92 +2,153 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { Brain, Cpu, Database, Activity, Upload, TrendingDown } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { getModelInfo, getHealth } from '../api';
 import { MetricsCard, MetricsCardSkeleton } from '../components/MetricsCard';
-import { CLASS_NAMES, CLASS_COLORS } from '../types';
-import { Link } from 'react-router-dom';
+import { ClassLegend } from '../components/ClassLegend';
+import { StatusBadge } from '../components/StatusBadge';
+import { PageHeader } from '../components/PageHeader';
 
 export const Dashboard: React.FC = () => {
-  const { data: info,   isLoading: infoLoading  } = useQuery({ queryKey: ['model-info'],   queryFn: getModelInfo,  refetchInterval: 30_000 });
-  const { data: health, isLoading: healthLoading } = useQuery({ queryKey: ['health'],       queryFn: getHealth,     refetchInterval: 10_000 });
+  const { data: info,   isLoading: infoLoading }   = useQuery({ queryKey: ['model-info'],   queryFn: getModelInfo,  refetchInterval: 30_000 });
+  const { data: health, isLoading: healthLoading }  = useQuery({ queryKey: ['health'],       queryFn: getHealth,     refetchInterval: 10_000 });
 
   const isOnline = health?.status === 'ok';
+
+  const SYSTEM_INFO = [
+    ['API Version',    health?.version        ?? '—'],
+    ['Model Version',  info?.model_version    ?? '—'],
+    ['Dataset',        info?.dataset_version  ?? '—'],
+    ['Device',         health?.device         ?? '—'],
+  ];
 
   return (
     <div className="page-shell">
       <div className="page-container-wide">
-        {/* Header */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h1 className="text-3xl font-bold gradient-text">Dashboard</h1>
-              <p className="text-[#8b949e] mt-1">CanopyML platform overview and quick actions</p>
-            </div>
-            <div className={`surface flex w-fit items-center gap-2 px-4 py-2 ${isOnline ? 'border-[#2d8c4e]/40' : 'border-red-500/40'}`}>
-              <span className={`w-2 h-2 rounded-full ${isOnline ? 'bg-[#2d8c4e] animate-pulse' : 'bg-red-500'}`} />
-              <span className={`text-sm font-medium ${isOnline ? 'text-[#3aad63]' : 'text-red-400'}`}>
-                {healthLoading ? 'Connecting…' : isOnline ? 'API Online' : 'API Offline'}
-              </span>
-            </div>
-          </div>
-        </motion.div>
 
-        {/* Quick actions */}
-        <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2">
-          <Link to="/classify">
+        {/* Header */}
+        <PageHeader
+          icon={Activity}
+          iconColor="#4ade80"
+          iconBg="rgba(34, 197, 94, 0.1)"
+          title="Dashboard"
+          subtitle="CanopyML platform overview and quick actions"
+          right={
+            <StatusBadge
+              isLoading={healthLoading}
+              isOnline={isOnline}
+            />
+          }
+        />
+
+        {/* ── Quick Actions ────────────────────────────────── */}
+        <div style={{
+          display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+          gap: '16px', marginBottom: '24px',
+        }}>
+          <Link to="/classify" style={{ textDecoration: 'none' }}>
             <motion.div
-              whileHover={{ scale: 1.01 }}
-              className="surface cursor-pointer p-6 transition-all hover:border-[#2d8c4e]/40 group"
+              whileHover={{ y: -3, borderColor: 'rgba(34, 197, 94, 0.25)' }}
+              className="surface"
+              style={{ padding: '28px', cursor: 'pointer', transition: 'all 0.2s ease' }}
             >
-              <div className="flex items-center gap-4">
-                <div className="icon-tile h-14 w-14 flex-shrink-0 bg-[#2d8c4e]/20 transition-transform group-hover:scale-105">
-                  <Upload size={26} className="text-[#3aad63]" />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                <div style={{
+                  width: 56, height: 56, borderRadius: '16px', flexShrink: 0,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  background: 'rgba(34, 197, 94, 0.1)',
+                  border: '1px solid rgba(34, 197, 94, 0.2)',
+                  boxShadow: '0 4px 12px rgba(34, 197, 94, 0.1)',
+                }}>
+                  <Upload size={26} color="#4ade80" />
                 </div>
                 <div>
-                  <p className="font-semibold text-[#e6edf3] text-lg">Classify Image</p>
-                  <p className="text-[#8b949e] text-sm">Upload a satellite patch for land cover classification</p>
+                  <p style={{
+                    fontFamily: "'Syne', sans-serif",
+                    fontSize: '17px', fontWeight: 700,
+                    letterSpacing: '-0.015em',
+                    color: '#eef2ec', marginBottom: '4px',
+                  }}>
+                    Classify Image
+                  </p>
+                  <p style={{ fontSize: '13px', color: '#687268' }}>
+                    Upload a satellite patch for land cover classification
+                  </p>
                 </div>
               </div>
             </motion.div>
           </Link>
-          <Link to="/deforestation">
+
+          <Link to="/deforestation" style={{ textDecoration: 'none' }}>
             <motion.div
-              whileHover={{ scale: 1.01 }}
-              className="surface cursor-pointer p-6 transition-all hover:border-red-500/30 group"
+              whileHover={{ y: -3, borderColor: 'rgba(249, 115, 22, 0.25)' }}
+              className="surface"
+              style={{ padding: '28px', cursor: 'pointer', transition: 'all 0.2s ease' }}
             >
-              <div className="flex items-center gap-4">
-                <div className="icon-tile h-14 w-14 flex-shrink-0 bg-red-500/15 transition-transform group-hover:scale-105">
-                  <TrendingDown size={26} className="text-red-400" />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                <div style={{
+                  width: 56, height: 56, borderRadius: '16px', flexShrink: 0,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  background: 'rgba(249, 115, 22, 0.1)',
+                  border: '1px solid rgba(249, 115, 22, 0.2)',
+                  boxShadow: '0 4px 12px rgba(249, 115, 22, 0.1)',
+                }}>
+                  <TrendingDown size={26} color="#fb923c" />
                 </div>
                 <div>
-                  <p className="font-semibold text-[#e6edf3] text-lg">Detect Deforestation</p>
-                  <p className="text-[#8b949e] text-sm">Compare before & after images to find forest loss</p>
+                  <p style={{
+                    fontFamily: "'Syne', sans-serif",
+                    fontSize: '17px', fontWeight: 700,
+                    letterSpacing: '-0.015em',
+                    color: '#eef2ec', marginBottom: '4px',
+                  }}>
+                    Detect Deforestation
+                  </p>
+                  <p style={{ fontSize: '13px', color: '#687268' }}>
+                    Compare before & after images to find forest loss
+                  </p>
                 </div>
               </div>
             </motion.div>
           </Link>
         </div>
 
-        {/* Metrics */}
-        <div className="mb-8 grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
+        {/* ── Metrics ──────────────────────────────────────── */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+          gap: '16px', marginBottom: '24px',
+        }}>
           {infoLoading ? (
             Array.from({ length: 4 }).map((_, i) => <MetricsCardSkeleton key={i} />)
           ) : (
             <>
               <MetricsCard
-                label="Model Accuracy" icon={Brain} color="#2d8c4e" delay={0}
+                label="Model Accuracy"
+                icon={Brain} color="#22c55e" delay={0}
                 value={info?.accuracy ? `${(info.accuracy * 100).toFixed(1)}` : '—'}
                 suffix={info?.accuracy ? '%' : ''}
                 subtitle={info?.is_stub ? 'Not trained yet' : 'On test set'}
               />
-              <MetricsCard label="Land Cover Classes" icon={Database} color="#00b4a6" delay={0.1} value={info?.num_classes ?? 10} />
               <MetricsCard
-                label="Device"  icon={Cpu}      color="#f9a825" delay={0.2}
-                value={health?.device?.includes('mps') ? 'MPS' : health?.device?.includes('cuda') ? 'CUDA' : 'CPU'}
+                label="Land Cover Classes"
+                icon={Database} color="#06b6d4" delay={0.08}
+                value={info?.num_classes ?? 10}
+                subtitle="EuroSAT RGB"
+              />
+              <MetricsCard
+                label="Device"
+                icon={Cpu} color="#f59e0b" delay={0.16}
+                value={
+                  health?.device?.includes('mps') ? 'MPS' :
+                  health?.device?.includes('cuda') ? 'CUDA' : 'CPU'
+                }
                 subtitle={health?.device}
               />
               <MetricsCard
-                label="Model Status" icon={Activity} color={info?.is_stub ? '#f9a825' : '#2d8c4e'} delay={0.3}
+                label="Model Status"
+                icon={Activity}
+                color={info?.is_stub ? '#f59e0b' : '#22c55e'} delay={0.24}
                 value={info?.is_stub ? 'Stub' : 'Trained'}
                 subtitle={info?.is_trained ? 'checkpoint loaded' : 'run train.py'}
               />
@@ -95,36 +156,65 @@ export const Dashboard: React.FC = () => {
           )}
         </div>
 
-        {/* Classes grid */}
-        <div className="surface mb-8 p-6">
-          <h2 className="mb-5 font-semibold text-[#e6edf3]">EuroSAT Land Cover Classes</h2>
-          <div className="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2 md:grid-cols-5">
-            {CLASS_NAMES.map((name) => (
-              <div key={name} className="flex items-center gap-2 rounded-lg bg-white/3 px-4 py-2 transition-colors hover:bg-white/6">
-                <span className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: CLASS_COLORS[name] }} />
-                <span className="text-[#e6edf3] text-xs font-medium truncate">{name}</span>
-              </div>
-            ))}
+        {/* ── EuroSAT Classes ──────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="surface"
+          style={{ padding: '28px', marginBottom: '24px' }}
+        >
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px',
+          }}>
+            <div style={{
+              width: 8, height: 8, borderRadius: '50%',
+              background: 'linear-gradient(135deg, #22c55e, #4ade80)',
+            }} />
+            <h2 style={{
+              fontFamily: "'Syne', sans-serif",
+              fontSize: '15px', fontWeight: 700,
+              color: '#eef2ec', letterSpacing: '-0.01em',
+            }}>
+              EuroSAT Land Cover Classes
+            </h2>
           </div>
-        </div>
+          <ClassLegend />
+        </motion.div>
 
-        {/* System info */}
-        <div className="surface p-6">
-          <h2 className="mb-4 font-semibold text-[#e6edf3]">System Information</h2>
-          <div className="grid grid-cols-1 gap-x-8 gap-y-4 text-sm sm:grid-cols-2 md:grid-cols-4">
-            {[
-              ['API Version',    health?.version      ?? '—'],
-              ['Model Version',  info?.model_version  ?? '—'],
-              ['Dataset',        info?.dataset_version ?? '—'],
-              ['Device',         health?.device        ?? '—'],
-            ].map(([k, v]) => (
+        {/* ── System Info ──────────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="surface"
+          style={{ padding: '28px' }}
+        >
+          <h2 style={{
+            fontFamily: "'Syne', sans-serif",
+            fontSize: '15px', fontWeight: 700,
+            color: '#eef2ec', marginBottom: '20px',
+          }}>
+            System Information
+          </h2>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+            gap: '20px',
+          }}>
+            {SYSTEM_INFO.map(([k, v]) => (
               <div key={k}>
-                <p className="text-[#8b949e] text-xs uppercase tracking-wide">{k}</p>
-                <p className="text-[#e6edf3] font-medium mt-0.5">{v}</p>
+                <p style={{ fontSize: '11px', fontWeight: 600, color: '#687268', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '4px' }}>
+                  {k}
+                </p>
+                <p style={{ fontSize: '14px', fontWeight: 600, color: '#eef2ec', fontFamily: "'JetBrains Mono', monospace" }}>
+                  {v}
+                </p>
               </div>
             ))}
           </div>
-        </div>
+        </motion.div>
+
       </div>
     </div>
   );

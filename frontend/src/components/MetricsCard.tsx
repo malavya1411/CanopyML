@@ -3,56 +3,88 @@ import { motion } from 'framer-motion';
 import type { LucideIcon } from 'lucide-react';
 
 interface MetricsCardProps {
-  label:      string;
-  value:      string | number;
-  icon:       LucideIcon;
-  color?:     string;
-  suffix?:    string;
-  delay?:     number;
-  subtitle?:  string;
+  label: string;
+  value: string | number;
+  suffix?: string;
+  subtitle?: string;
+  icon: LucideIcon;
+  color?: string;
+  delay?: number;
 }
 
 export const MetricsCard: React.FC<MetricsCardProps> = ({
-  label, value, icon: Icon, color = '#2d8c4e', suffix = '', delay = 0, subtitle,
+  label, value, suffix = '', subtitle, icon: Icon,
+  color = '#4ade80', delay = 0,
 }) => (
   <motion.div
-    initial={{ opacity: 0, y: 20 }}
+    initial={{ opacity: 0, y: 16 }}
     animate={{ opacity: 1, y: 0 }}
-    transition={{ delay, duration: 0.4 }}
-    className="surface p-6 hover:border-white/20 transition-all duration-300 group max-sm:p-5"
+    transition={{ duration: 0.45, delay, ease: [0.22, 1, 0.36, 1] }}
+    className="surface surface-hover"
+    style={{ padding: '24px', position: 'relative' }}
   >
-    <div className="flex items-start justify-between gap-4">
-      <div className="min-w-0 flex-1">
-        <p className="text-[#8b949e] text-[11px] font-semibold uppercase tracking-wider leading-snug">{label}</p>
-        <p className="text-2xl sm:text-3xl font-bold mt-1 text-[#e6edf3] truncate">
-          {value}{suffix}
-        </p>
-        {subtitle && <p className="text-[#8b949e] text-xs mt-1 truncate">{subtitle}</p>}
+    {/* Subtle corner glow */}
+    <div style={{
+      position: 'absolute', top: 0, right: 0,
+      width: 80, height: 80,
+      background: `radial-gradient(circle at 100% 0%, ${color}18 0%, transparent 70%)`,
+      borderRadius: 'inherit',
+      pointerEvents: 'none',
+    }} />
+
+    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '16px' }}>
+      {/* Icon tile */}
+      <div style={{
+        width: 42, height: 42, borderRadius: '11px', flexShrink: 0,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        background: `${color}14`,
+        border: `1px solid ${color}25`,
+      }}>
+        <Icon size={20} color={color} />
       </div>
-      <div
-        className="icon-tile w-10 h-10 sm:w-11 sm:h-11 flex-shrink-0 transition-transform group-hover:scale-105"
-        style={{ background: `${color}25` }}
-      >
-        <Icon size={20} style={{ color }} />
-      </div>
+      {/* Label */}
+      <span style={{
+        fontSize: '11px', fontWeight: 600,
+        color: '#687268', letterSpacing: '0.1em',
+        textTransform: 'uppercase',
+        textAlign: 'right',
+      }}>
+        {label}
+      </span>
     </div>
-    <div className="mt-3 h-0.5 rounded-full" style={{ background: `${color}40` }}>
-      <motion.div
-        initial={{ width: 0 }}
-        animate={{ width: '60%' }}
-        transition={{ delay: delay + 0.3, duration: 0.6 }}
-        className="h-full rounded-full"
-        style={{ background: color }}
-      />
+
+    {/* Value */}
+    <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px' }}>
+      <span style={{
+        fontFamily: "'Syne', sans-serif",
+        fontSize: '32px', fontWeight: 800,
+        letterSpacing: '-0.03em', lineHeight: 1,
+        color: '#eef2ec',
+      }}>
+        {value}
+      </span>
+      {suffix && (
+        <span style={{ fontSize: '16px', fontWeight: 600, color: color, letterSpacing: '-0.01em' }}>
+          {suffix}
+        </span>
+      )}
     </div>
+
+    {subtitle && (
+      <p style={{ marginTop: '6px', fontSize: '12px', color: '#687268', fontWeight: 400 }}>
+        {subtitle}
+      </p>
+    )}
   </motion.div>
 );
 
-// Skeleton variant
 export const MetricsCardSkeleton: React.FC = () => (
-  <div className="surface p-6 max-sm:p-5">
-    <div className="skeleton h-3 w-24 mb-3" />
-    <div className="skeleton h-9 w-32 mb-2" />
-    <div className="skeleton h-0.5 w-full mt-3" />
+  <div className="surface" style={{ padding: '24px' }}>
+    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
+      <div className="skeleton" style={{ width: 42, height: 42, borderRadius: '11px' }} />
+      <div className="skeleton" style={{ width: 80, height: 14, borderRadius: '6px' }} />
+    </div>
+    <div className="skeleton" style={{ width: '60%', height: 32, borderRadius: '8px', marginBottom: '8px' }} />
+    <div className="skeleton" style={{ width: '40%', height: 12, borderRadius: '4px' }} />
   </div>
 );

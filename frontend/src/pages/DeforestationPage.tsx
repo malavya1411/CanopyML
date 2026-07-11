@@ -1,13 +1,34 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMutation } from '@tanstack/react-query';
-import { GitCompare, Loader2, FileText, TreePine, AlertTriangle } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { TreePine, Loader2, FileText, AlertTriangle } from 'lucide-react';
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid,
+  Tooltip, ResponsiveContainer, Cell,
+} from 'recharts';
 import toast from 'react-hot-toast';
 
 import { compareImages, requestDeforestationReport, getReportDownloadUrl } from '../api';
 import { ImageDropzone } from '../components/ImageDropzone';
-import { CLASS_COLORS } from '../types';
+import { PageHeader } from '../components/PageHeader';
+
+const CLASS_COLORS: Record<string, string> = {
+  AnnualCrop: '#f59e0b', Forest: '#22c55e', HerbaceousVegetation: '#84cc16',
+  Highway: '#94a3b8', Industrial: '#f97316', Pasture: '#a3e635',
+  PermanentCrop: '#eab308', Residential: '#ef4444', River: '#3b82f6', SeaLake: '#06b6d4',
+};
+
+interface StatCardProps { label: string; value: string; color: string; }
+const StatCard: React.FC<StatCardProps> = ({ label, value, color }) => (
+  <div className="surface" style={{ padding: '20px 24px', textAlign: 'center' }}>
+    <p style={{ fontSize: '11px', fontWeight: 600, color: '#687268', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '8px' }}>
+      {label}
+    </p>
+    <p style={{ fontFamily: "'Syne', sans-serif", fontSize: '22px', fontWeight: 800, letterSpacing: '-0.025em', color }}>
+      {value}
+    </p>
+  </div>
+);
 
 export const DeforestationPage: React.FC = () => {
   const [before, setBefore] = useState<File | null>(null);
@@ -30,11 +51,11 @@ export const DeforestationPage: React.FC = () => {
     onError: () => toast.error('Report failed.'),
   });
 
-  const handleRun  = () => { if (before && after) mutate([before, after]); };
+  const handleRun   = () => { if (before && after) mutate([before, after]); };
   const handleClear = () => { setBefore(null); setAfter(null); reset(); };
 
-  const pctChange = data ? data.percent_change : null;
-  const changeColor = pctChange !== null ? (pctChange < 0 ? '#ef5350' : '#2d8c4e') : '#8b949e';
+  const pctChange  = data ? data.percent_change : null;
+  const changeColor = pctChange !== null ? (pctChange < 0 ? '#f87171' : '#4ade80') : '#687268';
 
   const barData = data
     ? Object.entries(data.change_by_class)
@@ -45,143 +66,243 @@ export const DeforestationPage: React.FC = () => {
   return (
     <div className="page-shell">
       <div className="page-container">
-        {/* Header */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="icon-tile h-10 w-10 bg-red-500/15">
-              <GitCompare size={20} className="text-red-400" />
-            </div>
-            <h1 className="text-3xl font-bold">Deforestation <span className="gradient-text">Detection</span></h1>
-          </div>
-          <p className="text-[#8b949e]">
-            Upload satellite images from two different dates. CanopyML detects where forest was lost.
-          </p>
-        </motion.div>
+        <PageHeader
+          icon={TreePine}
+          iconColor="#fb923c"
+          iconBg="rgba(249, 115, 22, 0.1)"
+          title={<>Deforestation <span style={{ background: 'linear-gradient(135deg, #4ade80, #86efac)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Detection</span></>}
+          subtitle="Upload satellite images from two different dates. CanopyML detects where forest was lost."
+        />
 
-        {/* Upload row */}
-        <div className="mb-6 grid grid-cols-1 gap-6 md:grid-cols-2">
-          <div className="surface p-6 max-sm:p-5">
-            <p className="text-xs font-semibold uppercase tracking-widest text-[#8b949e] mb-3">
-              Year 1 / Baseline
-            </p>
+        {/* ── Upload Row ───────────────────────────────── */}
+        <div style={{
+          display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+          gap: '16px', marginBottom: '20px',
+        }}>
+          <div className="surface" style={{ padding: '24px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
+              <div style={{
+                width: 7, height: 7, borderRadius: '50%',
+                background: '#a78bfa',
+              }} />
+              <p className="label-caps">Year 1 / Baseline</p>
+            </div>
             <ImageDropzone
-              onFile={setBefore} file={before}
+              onFile={setBefore}
+              file={before}
               onClear={() => { setBefore(null); reset(); }}
               label="Upload earlier satellite image"
             />
           </div>
-          <div className="surface p-6 max-sm:p-5">
-            <p className="text-xs font-semibold uppercase tracking-widest text-[#8b949e] mb-3">
-              Year 2 / Current
-            </p>
+
+          <div className="surface" style={{ padding: '24px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
+              <div style={{
+                width: 7, height: 7, borderRadius: '50%',
+                background: '#fb923c',
+              }} />
+              <p className="label-caps">Year 2 / Current</p>
+            </div>
             <ImageDropzone
-              onFile={setAfter} file={after}
+              onFile={setAfter}
+              file={after}
               onClear={() => { setAfter(null); reset(); }}
               label="Upload later satellite image"
             />
           </div>
         </div>
 
-        {/* Action row */}
-        <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:gap-4">
+        {/* ── Action Row ───────────────────────────────── */}
+        <div style={{ display: 'flex', gap: '12px', marginBottom: '24px', flexWrap: 'wrap' }}>
           <button
             onClick={handleRun}
             disabled={!before || !after || isPending}
-            className="primary-action flex flex-1 items-center justify-center gap-2 bg-gradient-to-r from-red-600 to-[#e05c2e] text-white transition-all hover:opacity-90 disabled:cursor-not-allowed"
+            className="btn btn-danger btn-lg"
+            style={{ flex: 1, minWidth: '200px' }}
           >
-            {isPending ? <><Loader2 size={18} className="animate-spin" /> Analysing…</> : <><GitCompare size={18} /> Detect Deforestation</>}
+            {isPending
+              ? <><Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> Analysing…</>
+              : <><TreePine size={18} /> Detect Deforestation</>
+            }
           </button>
+
           {data && before && after && (
             <button
               onClick={() => reportMut.mutate([before, after])}
               disabled={reportMut.isPending}
-              className="secondary-action glass flex items-center justify-center gap-2 font-medium text-[#e6edf3] transition-all hover:border-white/25 disabled:opacity-60"
+              className="btn btn-secondary"
+              style={{ height: '52px', padding: '0 24px' }}
             >
-              {reportMut.isPending ? <Loader2 size={16} className="animate-spin" /> : <FileText size={16} />}
+              {reportMut.isPending
+                ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} />
+                : <FileText size={16} />
+              }
               PDF Report
             </button>
           )}
+
           {data && (
-            <button onClick={handleClear} className="secondary-action glass px-5 py-3 text-[#8b949e] transition-colors hover:text-white">
+            <button
+              onClick={handleClear}
+              className="btn btn-secondary"
+              style={{ height: '52px', padding: '0 20px', color: '#687268' }}
+            >
               Clear
             </button>
           )}
         </div>
 
+        {/* Error */}
         {isError && (
-          <div className="mb-6 flex items-center gap-2 rounded-lg border border-red-500/30 bg-red-500/10 p-4">
-            <AlertTriangle size={16} className="text-red-400" />
-            <p className="text-red-400 text-sm">Detection failed. Check that the backend is running.</p>
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: '10px',
+            padding: '14px 16px', borderRadius: '12px',
+            background: 'rgba(239, 68, 68, 0.08)',
+            border: '1px solid rgba(239, 68, 68, 0.2)',
+            marginBottom: '20px',
+          }}>
+            <AlertTriangle size={16} color="#f87171" />
+            <p style={{ fontSize: '13px', color: '#f87171' }}>
+              Detection failed. Check that the backend is running.
+            </p>
           </div>
         )}
 
-        {/* Results */}
+        {/* ── Results ──────────────────────────────────── */}
         <AnimatePresence>
           {data && (
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-              {/* Stats row */}
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
-                {[
-                  { label: 'Deforestation Events', value: data.n_deforested.toLocaleString(), color: '#ef5350' },
-                  { label: 'Estimated Area',       value: `${data.area_km2.toFixed(2)} km²`, color: '#f9a825' },
-                  { label: 'Forest Coverage Y1',   value: `${(data.forest_coverage_2018*100).toFixed(1)}%`, color: '#2d8c4e' },
-                  { label: 'Net Forest Change',    value: `${data.percent_change.toFixed(1)}%`, color: changeColor },
-                ].map(({ label, value, color }) => (
-                  <div key={label} className="surface p-4 text-center">
-                    <p className="text-[#8b949e] text-xs uppercase tracking-wide mb-1">{label}</p>
-                    <p className="text-xl font-bold" style={{ color }}>{value}</p>
-                  </div>
-                ))}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
+            >
+              {/* Stat cards */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
+                gap: '12px',
+              }}>
+                <StatCard label="Deforestation Events" value={data.n_deforested.toLocaleString()} color="#f87171" />
+                <StatCard label="Estimated Area"       value={`${data.area_km2.toFixed(2)} km²`} color="#fbbf24" />
+                <StatCard label="Forest Coverage Y1"   value={`${(data.forest_coverage_2018 * 100).toFixed(1)}%`} color="#4ade80" />
+                <StatCard label="Net Forest Change"    value={`${data.percent_change.toFixed(1)}%`} color={changeColor} />
               </div>
 
               {/* Heatmap */}
               {data.heatmap_png && (
-                <div className="surface p-6">
-                  <h2 className="font-semibold text-[#e6edf3] mb-4">Change Detection Map</h2>
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.98 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="surface"
+                  style={{ padding: '28px' }}
+                >
+                  <h2 style={{
+                    fontFamily: "'Syne', sans-serif",
+                    fontSize: '15px', fontWeight: 700,
+                    color: '#eef2ec', marginBottom: '16px',
+                  }}>
+                    Change Detection Map
+                  </h2>
                   <img
                     src={`data:image/png;base64,${data.heatmap_png}`}
-                    alt="change heatmap"
-                    className="w-full rounded-lg"
+                    alt="Change detection heatmap"
+                    style={{ width: '100%', borderRadius: '10px', display: 'block' }}
                   />
-                </div>
+                </motion.div>
               )}
 
-              {/* Change by class bar chart */}
+              {/* Bar chart */}
               {barData.length > 0 && (
-                <div className="surface p-6">
-                  <h2 className="font-semibold text-[#e6edf3] mb-4">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.98 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.1 }}
+                  className="surface"
+                  style={{ padding: '28px' }}
+                >
+                  <h2 style={{
+                    fontFamily: "'Syne', sans-serif",
+                    fontSize: '15px', fontWeight: 700,
+                    color: '#eef2ec', marginBottom: '20px',
+                  }}>
                     Forest Loss by Destination Class
                   </h2>
                   <ResponsiveContainer width="100%" height={220}>
-                    <BarChart data={barData} margin={{ left: 0, right: 20 }}>
+                    <BarChart data={barData} margin={{ left: 0, right: 16 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                      <XAxis dataKey="name" tick={{ fill: '#8b949e', fontSize: 11 }} />
-                      <YAxis tick={{ fill: '#8b949e', fontSize: 11 }} />
+                      <XAxis dataKey="name" tick={{ fill: '#687268', fontSize: 11 }} axisLine={false} tickLine={false} />
+                      <YAxis tick={{ fill: '#687268', fontSize: 11 }} axisLine={false} tickLine={false} />
                       <Tooltip
-                        contentStyle={{ background: '#161b22', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8 }}
-                        labelStyle={{ color: '#e6edf3' }}
+                        contentStyle={{
+                          background: 'rgba(8, 14, 11, 0.97)',
+                          border: '1px solid rgba(34, 197, 94, 0.2)',
+                          borderRadius: '10px',
+                          boxShadow: '0 8px 24px rgba(0,0,0,0.5)',
+                        }}
+                        labelStyle={{ color: '#eef2ec', fontWeight: 600 }}
+                        itemStyle={{ color: '#a8b4a0' }}
                       />
-                      <Bar dataKey="value" radius={[4, 4, 0, 0]} name="Patches">
+                      <Bar dataKey="value" radius={[6, 6, 0, 0]} name="Patches">
                         {barData.map((entry, i) => (
-                          <Cell key={i} fill={entry.fill} />
+                          <Cell key={i} fill={entry.fill} opacity={0.85} />
                         ))}
                       </Bar>
                     </BarChart>
                   </ResponsiveContainer>
-                </div>
+                </motion.div>
               )}
             </motion.div>
           )}
         </AnimatePresence>
 
+        {/* Empty state */}
         {!data && !isPending && (
-          <div className="surface flex min-h-72 flex-col items-center justify-center p-10 text-center">
-            <TreePine size={56} className="text-[#8b949e] mb-4" />
-            <p className="text-[#8b949e] text-lg font-medium">Upload both images to begin analysis</p>
-            <p className="text-[#8b949e] text-sm mt-2">Both images must cover the same geographic area.</p>
+          <div className="surface" style={{
+            minHeight: '280px', display: 'flex',
+            flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+            padding: '48px', textAlign: 'center',
+          }}>
+            <div style={{
+              width: 72, height: 72, borderRadius: '20px', marginBottom: '20px',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              background: 'rgba(249, 115, 22, 0.06)',
+              border: '1px solid rgba(249, 115, 22, 0.1)',
+            }}>
+              <TreePine size={32} color="#687268" />
+            </div>
+            <p style={{ fontSize: '15px', fontWeight: 600, color: '#a8b4a0', marginBottom: '6px' }}>
+              Upload both images to begin analysis
+            </p>
+            <p style={{ fontSize: '13px', color: '#687268' }}>
+              Both images must cover the same geographic area.
+            </p>
+          </div>
+        )}
+
+        {/* Loading state */}
+        {isPending && (
+          <div className="surface" style={{
+            minHeight: '280px', display: 'flex',
+            flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '48px',
+          }}>
+            <div style={{ position: 'relative', marginBottom: '24px' }}>
+              <div style={{
+                width: 56, height: 56, borderRadius: '50%',
+                border: '2px solid rgba(249, 115, 22, 0.1)',
+                borderTop: '2px solid #fb923c',
+                animation: 'spin 1s linear infinite',
+              }} />
+            </div>
+            <p style={{ fontSize: '14px', color: '#a8b4a0', fontWeight: 500 }}>Analysing satellite images…</p>
+            <p style={{ fontSize: '12px', color: '#687268', marginTop: '4px' }}>Patchifying and comparing land cover</p>
           </div>
         )}
       </div>
+
+      <style>{`
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+      `}</style>
     </div>
   );
 };

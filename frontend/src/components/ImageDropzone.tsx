@@ -1,102 +1,221 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { useDropzone } from 'react-dropzone';
-import { Upload, Image, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { UploadCloud, X, FileImage, CheckCircle2 } from 'lucide-react';
 
 interface ImageDropzoneProps {
-  onFile:     (file: File) => void;
-  file?:      File | null;
-  onClear?:   () => void;
-  label?:     string;
-  accept?:    Record<string, string[]>;
-  className?: string;
+  onFile: (file: File) => void;
+  file: File | null;
+  onClear: () => void;
+  label?: string;
+  accept?: string[];
 }
 
 export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
-  onFile, file, onClear, label = 'Drop satellite image here',
-  accept = { 'image/*': ['.png', '.jpg', '.jpeg', '.tif', '.tiff'] },
-  className = '',
+  onFile, file, onClear,
+  label = 'Drop satellite image here',
+  accept = ['.png', '.jpg', '.jpeg', '.tif', '.tiff'],
 }) => {
-  const preview = file ? URL.createObjectURL(file) : null;
+  const [preview, setPreview] = React.useState<string | null>(null);
 
-  const onDrop = useCallback((accepted: File[]) => {
-    if (accepted[0]) onFile(accepted[0]);
-  }, [onFile]);
+  React.useEffect(() => {
+    if (!file) { setPreview(null); return; }
+    const url = URL.createObjectURL(file);
+    setPreview(url);
+    return () => URL.revokeObjectURL(url);
+  }, [file]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop, accept, maxFiles: 1, maxSize: 50 * 1024 * 1024,
+    accept: {
+      'image/png':  ['.png'],
+      'image/jpeg': ['.jpg', '.jpeg'],
+      'image/tiff': ['.tif', '.tiff'],
+    },
+    maxFiles: 1,
+    onDrop: (accepted) => { if (accepted[0]) onFile(accepted[0]); },
   });
 
+  const formatSize = (bytes: number) => {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / 1024 / 1024).toFixed(2)} MB`;
+  };
+
   return (
-    <div className={`relative ${className}`}>
+    <div style={{ position: 'relative' }}>
       <AnimatePresence mode="wait">
         {file && preview ? (
+          /* ── File preview state ── */
           <motion.div
             key="preview"
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            className="relative overflow-hidden rounded-lg border border-white/10 bg-[#111827]"
+            exit={{ opacity: 0, scale: 0.96 }}
+            style={{
+              position: 'relative',
+              borderRadius: '14px',
+              overflow: 'hidden',
+              border: '1px solid rgba(34, 197, 94, 0.25)',
+              background: 'rgba(10, 25, 16, 0.6)',
+            }}
           >
-            <img src={preview} alt="preview" className="h-56 w-full object-cover sm:h-64" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-            <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between gap-3">
-              <div className="flex min-w-0 items-center gap-2">
-                <Image size={14} className="text-white" />
-                <span className="truncate text-sm text-white">{file.name}</span>
-                <span className="hidden text-xs text-white/60 sm:inline">
-                  ({(file.size / 1e6).toFixed(1)} MB)
-                </span>
+            {/* Image preview */}
+            <div style={{ position: 'relative', paddingTop: '56%', overflow: 'hidden' }}>
+              <img
+                src={preview}
+                alt="Preview"
+                style={{
+                  position: 'absolute', inset: 0,
+                  width: '100%', height: '100%',
+                  objectFit: 'cover',
+                }}
+              />
+              {/* Success overlay */}
+              <div style={{
+                position: 'absolute', inset: 0,
+                background: 'linear-gradient(to bottom, transparent 50%, rgba(8,14,11,0.9) 100%)',
+              }} />
+            </div>
+
+            {/* File info bar */}
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: '10px',
+              padding: '12px 14px',
+              background: 'rgba(8,14,11,0.8)',
+            }}>
+              <div style={{
+                width: 32, height: 32, borderRadius: '8px', flexShrink: 0,
+                background: 'rgba(34, 197, 94, 0.12)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <FileImage size={16} color="#4ade80" />
               </div>
-              {onClear && (
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p style={{
+                  fontSize: '13px', fontWeight: 600, color: '#eef2ec',
+                  overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                }}>
+                  {file.name}
+                </p>
+                <p style={{ fontSize: '11px', color: '#687268' }}>{formatSize(file.size)}</p>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <CheckCircle2 size={16} color="#4ade80" />
                 <button
-                  onClick={onClear}
-                  className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-red-500/85 transition-colors hover:bg-red-500"
-                  aria-label="Remove selected image"
+                  onClick={e => { e.stopPropagation(); onClear(); }}
+                  style={{
+                    width: 28, height: 28, borderRadius: '6px',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    background: 'rgba(239, 68, 68, 0.12)',
+                    border: '1px solid rgba(239, 68, 68, 0.2)',
+                    color: '#f87171',
+                    cursor: 'pointer',
+                    transition: 'all 0.15s ease',
+                  }}
+                  aria-label="Remove file"
                 >
-                  <X size={13} className="text-white" />
+                  <X size={14} />
                 </button>
-              )}
+              </div>
+            </div>
+
+            {/* File type chips */}
+            <div style={{
+              position: 'absolute', top: '10px', left: '10px',
+              display: 'flex', gap: '4px',
+            }}>
+              {accept.map(ext => (
+                <span key={ext} style={{
+                  fontSize: '10px', fontWeight: 600,
+                  padding: '2px 7px',
+                  borderRadius: '20px',
+                  background: 'rgba(8,14,11,0.85)',
+                  border: '1px solid rgba(34, 197, 94, 0.2)',
+                  color: '#4ade80',
+                  letterSpacing: '0.05em',
+                }}>
+                  {ext.replace('.', '').toUpperCase()}
+                </span>
+              ))}
             </div>
           </motion.div>
         ) : (
+          /* ── Drop zone state ── */
           <motion.div
             key="dropzone"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <div
-              {...getRootProps()}
-              className={`
-                min-h-64 border-2 border-dashed rounded-lg p-8 text-center cursor-pointer
-                transition-all duration-200 select-none
-                ${isDragActive
-                  ? 'border-[#2d8c4e] bg-[#2d8c4e]/10 dropzone-active'
-                  : 'border-white/15 hover:border-[#2d8c4e]/60 hover:bg-white/2 bg-[#111827]'
-                }
-              `}
+          <div
+            {...getRootProps()}
+            style={{
+              position: 'relative',
+              display: 'flex', flexDirection: 'column',
+              alignItems: 'center', justifyContent: 'center',
+              gap: '16px',
+              minHeight: '200px',
+              padding: '40px 20px',
+              borderRadius: '14px',
+              border: isDragActive
+                ? '2px dashed #4ade80'
+                : '2px dashed rgba(255,255,255,0.1)',
+              background: isDragActive
+                ? 'rgba(34, 197, 94, 0.04)'
+                : 'rgba(255, 255, 255, 0.02)',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              boxShadow: isDragActive ? '0 0 0 4px rgba(34, 197, 94, 0.08), inset 0 0 20px rgba(34, 197, 94, 0.04)' : 'none',
+            }}
+          >
+            <input {...getInputProps()} />
+
+            {/* Icon */}
+            <motion.div
+              animate={isDragActive ? { scale: 1.15, y: -4 } : { scale: 1, y: 0 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+              style={{
+                width: 64, height: 64, borderRadius: '18px',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                background: isDragActive
+                  ? 'rgba(34, 197, 94, 0.15)'
+                  : 'rgba(255,255,255,0.04)',
+                border: `1px solid ${isDragActive ? 'rgba(34,197,94,0.3)' : 'rgba(255,255,255,0.08)'}`,
+              }}
             >
-              <input {...getInputProps()} />
-              <motion.div
-                animate={{ y: isDragActive ? -4 : 0 }}
-                className="flex flex-col items-center gap-3"
-              >
-                <div className={`icon-tile h-14 w-14 transition-colors ${
-                  isDragActive ? 'bg-[#2d8c4e]/30' : 'bg-white/5'
-                }`}>
-                  <Upload size={26} className={isDragActive ? 'text-[#3aad63]' : 'text-[#8b949e]'} />
-                </div>
-                <div>
-                  <p className="text-[#e6edf3] font-medium">{label}</p>
-                  <p className="text-[#8b949e] text-sm mt-1">
-                    PNG, JPG, JPEG, TIFF · Max 50 MB
-                  </p>
-                  <p className="text-[#2d8c4e] text-sm mt-2 font-medium">
-                    {isDragActive ? 'Release to upload' : 'Click to browse'}
-                  </p>
-                </div>
-              </motion.div>
+              <UploadCloud size={28} color={isDragActive ? '#4ade80' : '#687268'} />
+            </motion.div>
+
+            {/* Text */}
+            <div style={{ textAlign: 'center' }}>
+              <p style={{
+                fontSize: '14px', fontWeight: 600,
+                color: isDragActive ? '#4ade80' : '#a8b4a0',
+                marginBottom: '4px',
+                transition: 'color 0.2s ease',
+              }}>
+                {isDragActive ? 'Release to upload' : label}
+              </p>
+              <p style={{ fontSize: '12px', color: '#687268' }}>
+                or <span style={{ color: '#4ade80', fontWeight: 600 }}>browse files</span>
+              </p>
+            </div>
+
+            {/* File types */}
+            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', justifyContent: 'center' }}>
+              {accept.map(ext => (
+                <span key={ext} style={{
+                  fontSize: '10px', fontWeight: 600,
+                  padding: '3px 8px', borderRadius: '20px',
+                  background: 'rgba(255,255,255,0.04)',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  color: '#687268',
+                  letterSpacing: '0.06em',
+                }}>
+                  {ext.replace('.', '').toUpperCase()}
+                </span>
+              ))}
+            </div>
             </div>
           </motion.div>
         )}
