@@ -35,11 +35,11 @@ export const ModelPage: React.FC = () => {
   }, [metrics]);
 
   return (
-    <div className="min-h-screen pt-24 pb-16 px-4">
-      <div className="max-w-6xl mx-auto">
+    <div className="page-shell">
+      <div className="page-container">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-xl bg-[#00b4a6]/15 flex items-center justify-center">
+            <div className="icon-tile h-10 w-10 bg-[#00b4a6]/15">
               <BarChart3 size={20} className="text-[#00b4a6]" />
             </div>
             <h1 className="text-3xl font-bold gradient-text">Model Information</h1>
@@ -52,7 +52,7 @@ export const ModelPage: React.FC = () => {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className={`mb-8 flex items-center gap-3 p-4 rounded-xl border ${
+            className={`mb-8 flex items-start gap-3 rounded-lg border p-4 ${
               info.is_stub
                 ? 'bg-amber-500/10 border-amber-500/30'
                 : 'bg-[#2d8c4e]/10 border-[#2d8c4e]/30'
@@ -75,7 +75,7 @@ export const ModelPage: React.FC = () => {
         )}
 
         {/* Metrics cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {infoLoading || metricsLoading ? (
             Array.from({ length: 4 }).map((_, i) => <MetricsCardSkeleton key={i} />)
           ) : (
@@ -90,38 +90,38 @@ export const ModelPage: React.FC = () => {
 
         {/* Info cards row */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <div className="glass rounded-2xl p-5">
+          <div className="surface p-5">
             <p className="text-[#8b949e] text-xs uppercase tracking-widest mb-3">Architecture</p>
             <div className="space-y-2 text-sm">
-              <div className="flex justify-between"><span className="text-[#8b949e]">Backbone</span><span className="text-[#e6edf3] font-medium">ResNet50 (ImageNet)</span></div>
-              <div className="flex justify-between"><span className="text-[#8b949e]">Head</span><span className="text-[#e6edf3] font-medium">Dropout(0.3) + Linear(2048,10)</span></div>
-              <div className="flex justify-between"><span className="text-[#8b949e]">Classes</span><span className="text-[#e6edf3] font-medium">{info?.num_classes ?? 10}</span></div>
-              <div className="flex justify-between"><span className="text-[#8b949e]">Device</span><span className="text-[#e6edf3] font-medium">{info?.device ?? '—'}</span></div>
+              <div className="flex justify-between gap-4"><span className="text-[#8b949e]">Backbone</span><span className="text-right font-medium text-[#e6edf3]">ResNet50 (ImageNet)</span></div>
+              <div className="flex justify-between gap-4"><span className="text-[#8b949e]">Head</span><span className="text-right font-medium text-[#e6edf3]">Dropout(0.3) + Linear(2048,10)</span></div>
+              <div className="flex justify-between gap-4"><span className="text-[#8b949e]">Classes</span><span className="text-right font-medium text-[#e6edf3]">{info?.num_classes ?? 10}</span></div>
+              <div className="flex justify-between gap-4"><span className="text-[#8b949e]">Device</span><span className="text-right font-medium text-[#e6edf3]">{info?.device ?? '—'}</span></div>
             </div>
           </div>
-          <div className="glass rounded-2xl p-5">
+          <div className="surface p-5">
             <p className="text-[#8b949e] text-xs uppercase tracking-widest mb-3">Training Config</p>
             <div className="space-y-2 text-sm">
-              <div className="flex justify-between"><span className="text-[#8b949e]">Stage A lr</span><span className="text-[#e6edf3] font-medium">0.001</span></div>
-              <div className="flex justify-between"><span className="text-[#8b949e]">Stage B lr</span><span className="text-[#e6edf3] font-medium">0.0001</span></div>
-              <div className="flex justify-between"><span className="text-[#8b949e]">Optimizer</span><span className="text-[#e6edf3] font-medium">Adam + ReduceLROnPlateau</span></div>
-              <div className="flex justify-between"><span className="text-[#8b949e]">Early Stop</span><span className="text-[#e6edf3] font-medium">Patience = 5</span></div>
+              <div className="flex justify-between gap-4"><span className="text-[#8b949e]">Stage A lr</span><span className="text-right font-medium text-[#e6edf3]">0.001</span></div>
+              <div className="flex justify-between gap-4"><span className="text-[#8b949e]">Stage B lr</span><span className="text-right font-medium text-[#e6edf3]">0.0001</span></div>
+              <div className="flex justify-between gap-4"><span className="text-[#8b949e]">Optimizer</span><span className="text-right font-medium text-[#e6edf3]">Adam + ReduceLROnPlateau</span></div>
+              <div className="flex justify-between gap-4"><span className="text-[#8b949e]">Early Stop</span><span className="text-right font-medium text-[#e6edf3]">Patience = 5</span></div>
             </div>
           </div>
-          <div className="glass rounded-2xl p-5">
+          <div className="surface p-5">
             <p className="text-[#8b949e] text-xs uppercase tracking-widest mb-3">Dataset</p>
             <div className="space-y-2 text-sm">
-              <div className="flex justify-between"><span className="text-[#8b949e]">Name</span><span className="text-[#e6edf3] font-medium">EuroSAT RGB</span></div>
-              <div className="flex justify-between"><span className="text-[#8b949e]">Total Images</span><span className="text-[#e6edf3] font-medium">27,000</span></div>
-              <div className="flex justify-between"><span className="text-[#8b949e]">Split</span><span className="text-[#e6edf3] font-medium">80 / 10 / 10</span></div>
-              <div className="flex justify-between"><span className="text-[#8b949e]">Version</span><span className="text-[#e6edf3] font-medium">{info?.dataset_version ?? 'EuroSAT-RGB-v2'}</span></div>
+              <div className="flex justify-between gap-4"><span className="text-[#8b949e]">Name</span><span className="text-right font-medium text-[#e6edf3]">EuroSAT RGB</span></div>
+              <div className="flex justify-between gap-4"><span className="text-[#8b949e]">Total Images</span><span className="text-right font-medium text-[#e6edf3]">27,000</span></div>
+              <div className="flex justify-between gap-4"><span className="text-[#8b949e]">Split</span><span className="text-right font-medium text-[#e6edf3]">80 / 10 / 10</span></div>
+              <div className="flex justify-between gap-4"><span className="text-[#8b949e]">Version</span><span className="text-right font-medium text-[#e6edf3]">{info?.dataset_version ?? 'EuroSAT-RGB-v2'}</span></div>
             </div>
           </div>
         </div>
 
         {/* Training curves */}
         {curveData.length > 0 && (
-          <div className="glass rounded-2xl p-6 mb-8">
+          <div className="surface p-6 mb-8">
             <h2 className="font-semibold text-[#e6edf3] mb-6">Training Curves</h2>
             <ResponsiveContainer width="100%" height={280}>
               <LineChart data={curveData}>
@@ -140,19 +140,19 @@ export const ModelPage: React.FC = () => {
 
         {/* Confusion matrix */}
         {metrics?.confusion_matrix_png && (
-          <div className="glass rounded-2xl p-6">
+          <div className="surface p-6">
             <h2 className="font-semibold text-[#e6edf3] mb-4">Confusion Matrix</h2>
             <img
               src={`data:image/png;base64,${metrics.confusion_matrix_png}`}
               alt="confusion matrix"
-              className="w-full rounded-xl"
+              className="w-full rounded-lg"
             />
           </div>
         )}
 
         {/* No data state */}
         {!metricsLoading && !metrics?.confusion_matrix_png && curveData.length === 0 && (
-          <div className="glass rounded-2xl p-12 text-center">
+          <div className="surface p-10 text-center">
             <BarChart3 size={48} className="text-[#8b949e] mx-auto mb-4" />
             <p className="text-[#8b949e]">
               No evaluation data yet. Run{' '}

@@ -72,10 +72,10 @@ const SECTIONS = [
 ];
 
 export const AboutPage: React.FC = () => (
-  <div className="min-h-screen pt-24 pb-16 px-4">
-    <div className="max-w-4xl mx-auto">
+  <div className="page-shell">
+    <div className="mx-auto max-w-4xl">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-12 text-center">
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#2d8c4e] to-[#00b4a6] flex items-center justify-center mx-auto mb-4">
+        <div className="icon-tile mx-auto mb-4 h-16 w-16 bg-gradient-to-br from-[#2d8c4e] to-[#00b4a6]">
           <Leaf size={32} className="text-white" />
         </div>
         <h1 className="text-4xl font-extrabold gradient-text mb-4">About CanopyML</h1>
@@ -92,10 +92,10 @@ export const AboutPage: React.FC = () => (
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.08 }}
-            className="glass rounded-2xl p-6"
+            className="surface p-6"
           >
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: `${color}20` }}>
+              <div className="icon-tile h-9 w-9 flex-shrink-0" style={{ background: `${color}20` }}>
                 <Icon size={18} style={{ color }} />
               </div>
               <h2 className="font-bold text-[#e6edf3] text-lg">{title}</h2>
@@ -112,7 +112,7 @@ export const AboutPage: React.FC = () => (
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
-        className="glass rounded-2xl p-6 mt-8"
+        className="surface p-6 mt-8"
       >
         <h2 className="font-bold text-[#e6edf3] mb-4">References & Resources</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -123,7 +123,7 @@ export const AboutPage: React.FC = () => (
             { label: 'Global Forest Watch',                  url: 'https://www.globalforestwatch.org' },
           ].map(({ label, url }) => (
             <a key={label} href={url} target="_blank" rel="noopener noreferrer"
-               className="flex items-center gap-2 p-3 rounded-xl bg-white/3 hover:bg-white/6 text-[#8b949e] hover:text-[#e6edf3] text-sm transition-all group">
+               className="flex items-center gap-2 rounded-lg bg-white/3 p-3 text-sm text-[#8b949e] transition-all hover:bg-white/6 hover:text-[#e6edf3] group">
               <ExternalLink size={14} className="text-[#2d8c4e] group-hover:scale-110 transition-transform" />
               {label}
             </a>

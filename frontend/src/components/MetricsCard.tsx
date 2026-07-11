@@ -19,18 +19,18 @@ export const MetricsCard: React.FC<MetricsCardProps> = ({
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ delay, duration: 0.4 }}
-    className="glass rounded-2xl p-5 hover:border-white/20 transition-all duration-300 group"
+    className="surface p-5 hover:border-white/20 transition-all duration-300 group"
   >
-    <div className="flex items-start justify-between">
-      <div className="flex-1">
-        <p className="text-[#8b949e] text-xs font-semibold uppercase tracking-widest">{label}</p>
-        <p className="text-3xl font-bold mt-1 text-[#e6edf3]">
+    <div className="flex items-start justify-between gap-4">
+      <div className="min-w-0 flex-1">
+        <p className="text-[#8b949e] text-[11px] font-semibold uppercase tracking-wider leading-snug">{label}</p>
+        <p className="text-2xl sm:text-3xl font-bold mt-1 text-[#e6edf3] truncate">
           {value}{suffix}
         </p>
-        {subtitle && <p className="text-[#8b949e] text-xs mt-1">{subtitle}</p>}
+        {subtitle && <p className="text-[#8b949e] text-xs mt-1 truncate">{subtitle}</p>}
       </div>
       <div
-        className="w-11 h-11 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110"
+        className="icon-tile w-10 h-10 sm:w-11 sm:h-11 flex-shrink-0 transition-transform group-hover:scale-105"
         style={{ background: `${color}25` }}
       >
         <Icon size={20} style={{ color }} />
@@ -50,7 +50,7 @@ export const MetricsCard: React.FC<MetricsCardProps> = ({
 
 // Skeleton variant
 export const MetricsCardSkeleton: React.FC = () => (
-  <div className="glass rounded-2xl p-5">
+  <div className="surface p-5">
     <div className="skeleton h-3 w-24 mb-3" />
     <div className="skeleton h-9 w-32 mb-2" />
     <div className="skeleton h-0.5 w-full mt-3" />

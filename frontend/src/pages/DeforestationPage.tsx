@@ -43,12 +43,12 @@ export const DeforestationPage: React.FC = () => {
     : [];
 
   return (
-    <div className="min-h-screen pt-24 pb-16 px-4">
-      <div className="max-w-6xl mx-auto">
+    <div className="page-shell">
+      <div className="page-container">
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-xl bg-red-500/15 flex items-center justify-center">
+            <div className="icon-tile h-10 w-10 bg-red-500/15">
               <GitCompare size={20} className="text-red-400" />
             </div>
             <h1 className="text-3xl font-bold">Deforestation <span className="gradient-text">Detection</span></h1>
@@ -60,9 +60,9 @@ export const DeforestationPage: React.FC = () => {
 
         {/* Upload row */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
-          <div className="glass rounded-2xl p-5">
+          <div className="surface p-5">
             <p className="text-xs font-semibold uppercase tracking-widest text-[#8b949e] mb-3">
-              📅 Year 1 — Baseline (Before)
+              Year 1 / Baseline
             </p>
             <ImageDropzone
               onFile={setBefore} file={before}
@@ -70,9 +70,9 @@ export const DeforestationPage: React.FC = () => {
               label="Upload earlier satellite image"
             />
           </div>
-          <div className="glass rounded-2xl p-5">
+          <div className="surface p-5">
             <p className="text-xs font-semibold uppercase tracking-widest text-[#8b949e] mb-3">
-              📅 Year 2 — Current (After)
+              Year 2 / Current
             </p>
             <ImageDropzone
               onFile={setAfter} file={after}
@@ -83,11 +83,11 @@ export const DeforestationPage: React.FC = () => {
         </div>
 
         {/* Action row */}
-        <div className="flex gap-4 mb-8">
+        <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:gap-4">
           <button
             onClick={handleRun}
             disabled={!before || !after || isPending}
-            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-red-600 to-[#e05c2e] text-white font-semibold hover:opacity-90 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+            className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-red-600 to-[#e05c2e] py-3 font-semibold text-white transition-all hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
           >
             {isPending ? <><Loader2 size={18} className="animate-spin" /> Analysing…</> : <><GitCompare size={18} /> Detect Deforestation</>}
           </button>
@@ -95,21 +95,21 @@ export const DeforestationPage: React.FC = () => {
             <button
               onClick={() => reportMut.mutate([before, after])}
               disabled={reportMut.isPending}
-              className="flex items-center gap-2 px-5 py-3 rounded-xl glass text-[#e6edf3] font-medium hover:border-white/25 transition-all disabled:opacity-40"
+              className="glass flex items-center justify-center gap-2 rounded-lg px-5 py-3 font-medium text-[#e6edf3] transition-all hover:border-white/25 disabled:opacity-40"
             >
               {reportMut.isPending ? <Loader2 size={16} className="animate-spin" /> : <FileText size={16} />}
               PDF Report
             </button>
           )}
           {data && (
-            <button onClick={handleClear} className="px-5 py-3 rounded-xl glass text-[#8b949e] hover:text-white transition-colors">
+            <button onClick={handleClear} className="glass rounded-lg px-5 py-3 text-[#8b949e] transition-colors hover:text-white">
               Clear
             </button>
           )}
         </div>
 
         {isError && (
-          <div className="mb-6 flex items-center gap-2 p-4 rounded-xl bg-red-500/10 border border-red-500/30">
+          <div className="mb-6 flex items-center gap-2 rounded-lg border border-red-500/30 bg-red-500/10 p-4">
             <AlertTriangle size={16} className="text-red-400" />
             <p className="text-red-400 text-sm">Detection failed. Check that the backend is running.</p>
           </div>
@@ -120,14 +120,14 @@ export const DeforestationPage: React.FC = () => {
           {data && (
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
               {/* Stats row */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                 {[
                   { label: 'Deforestation Events', value: data.n_deforested.toLocaleString(), color: '#ef5350' },
                   { label: 'Estimated Area',       value: `${data.area_km2.toFixed(2)} km²`, color: '#f9a825' },
                   { label: 'Forest Coverage Y1',   value: `${(data.forest_coverage_2018*100).toFixed(1)}%`, color: '#2d8c4e' },
                   { label: 'Net Forest Change',    value: `${data.percent_change.toFixed(1)}%`, color: changeColor },
                 ].map(({ label, value, color }) => (
-                  <div key={label} className="glass rounded-2xl p-4 text-center">
+                  <div key={label} className="surface p-4 text-center">
                     <p className="text-[#8b949e] text-xs uppercase tracking-wide mb-1">{label}</p>
                     <p className="text-xl font-bold" style={{ color }}>{value}</p>
                   </div>
@@ -136,19 +136,19 @@ export const DeforestationPage: React.FC = () => {
 
               {/* Heatmap */}
               {data.heatmap_png && (
-                <div className="glass rounded-2xl p-6">
+                <div className="surface p-6">
                   <h2 className="font-semibold text-[#e6edf3] mb-4">Change Detection Map</h2>
                   <img
                     src={`data:image/png;base64,${data.heatmap_png}`}
                     alt="change heatmap"
-                    className="w-full rounded-xl"
+                    className="w-full rounded-lg"
                   />
                 </div>
               )}
 
               {/* Change by class bar chart */}
               {barData.length > 0 && (
-                <div className="glass rounded-2xl p-6">
+                <div className="surface p-6">
                   <h2 className="font-semibold text-[#e6edf3] mb-4">
                     Forest Loss by Destination Class
                   </h2>
@@ -175,7 +175,7 @@ export const DeforestationPage: React.FC = () => {
         </AnimatePresence>
 
         {!data && !isPending && (
-          <div className="glass rounded-2xl p-16 flex flex-col items-center text-center">
+          <div className="surface flex min-h-72 flex-col items-center p-10 text-center">
             <TreePine size={56} className="text-[#8b949e] mb-4" />
             <p className="text-[#8b949e] text-lg font-medium">Upload both images to begin analysis</p>
             <p className="text-[#8b949e] text-sm mt-2">Both images must cover the same geographic area.</p>

@@ -52,12 +52,9 @@ const CLASSES = [
 export const LandingPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#0B1220] text-[#F8FAFC]">
-      {/* ── BACKGROUND ORBS (Backdrop, no layout interference) ── */}
+      {/* ── BACKGROUND GRID (Backdrop, no layout interference) ── */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-[#10B981]/5 rounded-full blur-[120px]" />
-        <div className="absolute top-[20%] right-0 w-[600px] h-[600px] bg-[#059669]/5 rounded-full blur-[140px]" />
-        <div className="absolute bottom-[20%] left-0 w-[400px] h-[400px] bg-[#6EE7B7]/4 rounded-full blur-[100px]" />
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.025)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.025)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:linear-gradient(to_bottom,#000_0%,#000_58%,transparent_100%)]" />
       </div>
 
       {/* ── HERO SECTION ── */}
@@ -71,7 +68,7 @@ export const LandingPage: React.FC = () => {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass text-[#34D399] text-xs font-semibold uppercase tracking-wider mb-8"
+            className="inline-flex items-center gap-2 rounded-lg border border-[#34D399]/20 bg-[#10B981]/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-[#34D399] mb-8"
           >
             <Leaf size={12} className="animate-float" />
             Research-Grade AI Satellite Platform
@@ -108,13 +105,13 @@ export const LandingPage: React.FC = () => {
           >
             <Link
               to="/classify"
-              className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-gradient-to-r from-[#10B981] to-[#34D399] text-white font-bold text-base hover:shadow-[0_0_24px_rgba(16,185,129,0.35)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300"
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#10B981] to-[#34D399] px-8 py-3.5 text-base font-bold text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_24px_rgba(16,185,129,0.35)] active:translate-y-0"
             >
               Try Demo — Classify Image <ArrowRight size={18} />
             </Link>
             <Link
               to="/deforestation"
-              className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl glass text-[#F8FAFC] font-bold text-base hover:bg-white/5 hover:border-white/20 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300"
+              className="glass inline-flex items-center justify-center gap-2 rounded-lg px-8 py-3.5 text-base font-bold text-[#F8FAFC] transition-all duration-300 hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/5 active:translate-y-0"
             >
               Detect Deforestation <GitCompare size={18} />
             </Link>
@@ -138,7 +135,7 @@ export const LandingPage: React.FC = () => {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.4, delay: 0.4 + i * 0.04 }}
                   whileHover={{ y: -2, backgroundColor: 'rgba(255, 255, 255, 0.08)' }}
-                  className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold glass text-[#F8FAFC] transition-colors cursor-default"
+                  className="glass inline-flex cursor-default items-center gap-2 rounded-lg px-4 py-1.5 text-xs font-semibold text-[#F8FAFC] transition-colors"
                 >
                   <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: color }} />
                   <span>{name}</span>
@@ -171,9 +168,9 @@ export const LandingPage: React.FC = () => {
                 viewport={{ once: true, margin: '-50px' }}
                 transition={{ duration: 0.5, delay: i * 0.08 }}
                 whileHover={{ y: -6, borderColor: 'rgba(16, 185, 129, 0.25)', boxShadow: '0 12px 30px -10px rgba(0, 0, 0, 0.5)' }}
-                className="glass rounded-2xl p-8 transition-all duration-300 group flex flex-col items-start border border-white/8"
+                className="surface group flex flex-col items-start p-8 transition-all duration-300"
               >
-                <div className="w-[52px] h-[52px] rounded-xl flex items-center justify-center mb-6 bg-[#10B981]/10 group-hover:scale-110 transition-transform">
+                <div className="icon-tile mb-6 h-[52px] w-[52px] bg-[#10B981]/10 transition-transform group-hover:scale-105">
                   <Icon size={26} className="text-[#10B981]" />
                 </div>
                 <h3 className="text-xl font-bold text-[#F8FAFC] mb-3">{title}</h3>
@@ -202,7 +199,7 @@ export const LandingPage: React.FC = () => {
                 <div className="flex flex-col items-center text-center gap-2 group">
                   <motion.div 
                     whileHover={{ scale: 1.1 }}
-                    className="w-12 h-12 rounded-full bg-gradient-to-br from-[#10B981] to-[#34D399] flex items-center justify-center text-white font-bold text-sm shadow-[0_0_15px_rgba(16,185,129,0.2)]"
+                    className="flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-[#10B981] to-[#34D399] text-sm font-bold text-white shadow-[0_0_15px_rgba(16,185,129,0.2)]"
                   >
                     {step}
                   </motion.div>
@@ -221,11 +218,7 @@ export const LandingPage: React.FC = () => {
       {/* ── FOOTER CTA SECTION ── */}
       <section className="relative z-10 w-full">
         <div className="max-w-[900px] mx-auto px-6 py-[120px]">
-          <div className="text-center glass rounded-3xl p-12 relative overflow-hidden border border-white/8">
-            <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-              <div className="absolute bottom-[-50px] right-[-50px] w-64 h-64 bg-[#10B981]/5 rounded-full blur-[80px]" />
-            </div>
-            
+          <div className="surface relative overflow-hidden p-8 text-center sm:p-12">
             <div className="relative z-10 flex flex-col items-center">
               <Leaf size={44} className="text-[#10B981] mb-6 animate-float" />
               <h2 className="text-3xl font-bold tracking-tight mb-4 text-[#F8FAFC] text-center">Ready to Monitor Canopy Loss?</h2>
@@ -234,7 +227,7 @@ export const LandingPage: React.FC = () => {
               </p>
               <Link
                 to="/classify"
-                className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-gradient-to-r from-[#10B981] to-[#34D399] text-white font-bold hover:shadow-[0_0_24px_rgba(16,185,129,0.35)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300"
+                className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#10B981] to-[#34D399] px-8 py-3.5 font-bold text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_24px_rgba(16,185,129,0.35)] active:translate-y-0"
               >
                 Get Started Free <ArrowRight size={18} />
               </Link>

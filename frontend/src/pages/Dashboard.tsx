@@ -14,16 +14,16 @@ export const Dashboard: React.FC = () => {
   const isOnline = health?.status === 'ok';
 
   return (
-    <div className="min-h-screen pt-24 pb-16 px-4">
-      <div className="max-w-7xl mx-auto">
+    <div className="page-shell">
+      <div className="page-container-wide">
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h1 className="text-3xl font-bold gradient-text">Dashboard</h1>
               <p className="text-[#8b949e] mt-1">CanopyML platform overview and quick actions</p>
             </div>
-            <div className={`flex items-center gap-2 px-4 py-2 rounded-xl glass ${isOnline ? 'border-[#2d8c4e]/40' : 'border-red-500/40'}`}>
+            <div className={`surface flex w-fit items-center gap-2 px-4 py-2 ${isOnline ? 'border-[#2d8c4e]/40' : 'border-red-500/40'}`}>
               <span className={`w-2 h-2 rounded-full ${isOnline ? 'bg-[#2d8c4e] animate-pulse' : 'bg-red-500'}`} />
               <span className={`text-sm font-medium ${isOnline ? 'text-[#3aad63]' : 'text-red-400'}`}>
                 {healthLoading ? 'Connecting…' : isOnline ? 'API Online' : 'API Offline'}
@@ -37,10 +37,10 @@ export const Dashboard: React.FC = () => {
           <Link to="/classify">
             <motion.div
               whileHover={{ scale: 1.01 }}
-              className="glass rounded-2xl p-6 cursor-pointer hover:border-[#2d8c4e]/40 transition-all group"
+              className="surface cursor-pointer p-6 transition-all hover:border-[#2d8c4e]/40 group"
             >
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-[#2d8c4e]/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <div className="icon-tile h-14 w-14 flex-shrink-0 bg-[#2d8c4e]/20 transition-transform group-hover:scale-105">
                   <Upload size={26} className="text-[#3aad63]" />
                 </div>
                 <div>
@@ -53,10 +53,10 @@ export const Dashboard: React.FC = () => {
           <Link to="/deforestation">
             <motion.div
               whileHover={{ scale: 1.01 }}
-              className="glass rounded-2xl p-6 cursor-pointer hover:border-red-500/30 transition-all group"
+              className="surface cursor-pointer p-6 transition-all hover:border-red-500/30 group"
             >
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-red-500/15 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <div className="icon-tile h-14 w-14 flex-shrink-0 bg-red-500/15 transition-transform group-hover:scale-105">
                   <TrendingDown size={26} className="text-red-400" />
                 </div>
                 <div>
@@ -69,7 +69,7 @@ export const Dashboard: React.FC = () => {
         </div>
 
         {/* Metrics */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {infoLoading ? (
             Array.from({ length: 4 }).map((_, i) => <MetricsCardSkeleton key={i} />)
           ) : (
@@ -96,7 +96,7 @@ export const Dashboard: React.FC = () => {
         </div>
 
         {/* Classes grid */}
-        <div className="glass rounded-2xl p-6 mb-8">
+        <div className="surface p-6 mb-8">
           <h2 className="font-semibold text-[#e6edf3] mb-5">EuroSAT Land Cover Classes</h2>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
             {CLASS_NAMES.map((name) => (
@@ -109,9 +109,9 @@ export const Dashboard: React.FC = () => {
         </div>
 
         {/* System info */}
-        <div className="glass rounded-2xl p-6">
+        <div className="surface p-6">
           <h2 className="font-semibold text-[#e6edf3] mb-4">System Information</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-y-3 gap-x-6 text-sm">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-y-3 gap-x-6 text-sm">
             {[
               ['API Version',    health?.version      ?? '—'],
               ['Model Version',  info?.model_version  ?? '—'],

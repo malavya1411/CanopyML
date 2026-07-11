@@ -19,13 +19,13 @@ export const Navbar: React.FC = () => {
       initial={{ y: -60, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.4 }}
-      className="fixed top-0 left-0 right-0 z-50 glass border-b border-white/8"
+      className="fixed top-0 left-0 right-0 z-50 border-b border-white/8 bg-[#0B1220]/82 backdrop-blur-xl"
     >
       <div className="max-w-[1200px] mx-auto px-6">
         <div className="flex items-center justify-between h-[72px]">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#10B981] to-[#34D399] flex items-center justify-center group-hover:scale-110 transition-transform">
+            <div className="icon-tile h-8 w-8 bg-gradient-to-br from-[#10B981] to-[#34D399] transition-transform group-hover:scale-105">
               <Leaf size={16} className="text-white" />
             </div>
             <span className="font-bold text-lg gradient-text">CanopyML</span>
@@ -40,7 +40,7 @@ export const Navbar: React.FC = () => {
                 className={({ isActive }) =>
                   `flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                     isActive
-                      ? 'bg-[#10B981]/15 text-[#34D399]'
+                      ? 'bg-[#10B981]/15 text-[#34D399] shadow-[inset_0_0_0_1px_rgba(52,211,153,0.14)]'
                       : 'text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-white/5'
                   }`
                 }
@@ -55,7 +55,7 @@ export const Navbar: React.FC = () => {
           <div className="hidden md:flex items-center gap-3">
             <Link
               to="/classify"
-              className="px-4 py-1.5 rounded-lg bg-gradient-to-r from-[#10B981] to-[#34D399] text-white text-sm font-semibold hover:opacity-90 transition-opacity"
+              className="rounded-lg bg-gradient-to-r from-[#10B981] to-[#34D399] px-4 py-1.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
             >
               Try Demo
             </Link>
@@ -63,8 +63,9 @@ export const Navbar: React.FC = () => {
 
           {/* Mobile burger */}
           <button
-            className="md:hidden text-[#8b949e] hover:text-white"
+            className="md:hidden rounded-lg p-2 text-[#8b949e] hover:bg-white/5 hover:text-white"
             onClick={() => setOpen(!open)}
+            aria-label={open ? 'Close navigation' : 'Open navigation'}
           >
             {open ? <X size={22} /> : <Menu size={22} />}
           </button>
@@ -76,7 +77,7 @@ export const Navbar: React.FC = () => {
         <motion.div
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
-          className="md:hidden glass border-t border-white/10 px-4 pb-4"
+          className="md:hidden border-t border-white/10 bg-[#0B1220]/95 px-4 pb-4 backdrop-blur-xl"
         >
           {NAV_LINKS.map(({ to, label, icon: Icon }) => (
             <NavLink

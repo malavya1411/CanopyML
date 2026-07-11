@@ -36,22 +36,23 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            className="relative rounded-xl overflow-hidden border border-white/10 bg-[#161b22]"
+            className="relative overflow-hidden rounded-lg border border-white/10 bg-[#111827]"
           >
-            <img src={preview} alt="preview" className="w-full h-56 object-cover" />
+            <img src={preview} alt="preview" className="h-56 w-full object-cover sm:h-64" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-            <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
-              <div className="flex items-center gap-2">
+            <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between gap-3">
+              <div className="flex min-w-0 items-center gap-2">
                 <Image size={14} className="text-white" />
-                <span className="text-white text-sm truncate max-w-[200px]">{file.name}</span>
-                <span className="text-white/60 text-xs">
+                <span className="truncate text-sm text-white">{file.name}</span>
+                <span className="hidden text-xs text-white/60 sm:inline">
                   ({(file.size / 1e6).toFixed(1)} MB)
                 </span>
               </div>
               {onClear && (
                 <button
                   onClick={onClear}
-                  className="w-7 h-7 rounded-full bg-red-500/80 flex items-center justify-center hover:bg-red-500 transition-colors"
+                  className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-red-500/85 transition-colors hover:bg-red-500"
+                  aria-label="Remove selected image"
                 >
                   <X size={13} className="text-white" />
                 </button>
@@ -68,11 +69,11 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
             <div
               {...getRootProps()}
               className={`
-                border-2 border-dashed rounded-xl p-10 text-center cursor-pointer
+                min-h-64 border-2 border-dashed rounded-lg p-8 text-center cursor-pointer
                 transition-all duration-200 select-none
                 ${isDragActive
                   ? 'border-[#2d8c4e] bg-[#2d8c4e]/10 dropzone-active'
-                  : 'border-white/15 hover:border-[#2d8c4e]/60 hover:bg-white/2 bg-[#161b22]'
+                  : 'border-white/15 hover:border-[#2d8c4e]/60 hover:bg-white/2 bg-[#111827]'
                 }
               `}
             >
@@ -81,7 +82,7 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
                 animate={{ y: isDragActive ? -4 : 0 }}
                 className="flex flex-col items-center gap-3"
               >
-                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-colors ${
+                <div className={`icon-tile h-14 w-14 transition-colors ${
                   isDragActive ? 'bg-[#2d8c4e]/30' : 'bg-white/5'
                 }`}>
                   <Upload size={26} className={isDragActive ? 'text-[#3aad63]' : 'text-[#8b949e]'} />

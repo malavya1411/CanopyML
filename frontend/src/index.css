@@ -6,6 +6,7 @@
   --teal:        #059669;
   --teal-light:  #6EE7B7;
   --bg-dark:     #0B1220;
+  --bg-elevated: #111827;
   --bg-card:     rgba(255, 255, 255, 0.03);
   --bg-card2:    rgba(255, 255, 255, 0.05);
   --border:      rgba(255, 255, 255, 0.08);
@@ -19,7 +20,10 @@ html { scroll-behavior: smooth; }
 
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background: var(--bg-dark);
+  background:
+    radial-gradient(circle at 18% 8%, rgba(16,185,129,0.11), transparent 28rem),
+    radial-gradient(circle at 92% 18%, rgba(59,130,246,0.08), transparent 26rem),
+    linear-gradient(180deg, #0B1220 0%, #0D1626 48%, #0B1220 100%);
   color: var(--text-primary);
   line-height: 1.6;
   min-height: 100vh;
@@ -32,6 +36,48 @@ body {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--border);
+  box-shadow: 0 18px 48px rgba(2, 6, 23, 0.28);
+}
+
+.surface {
+  background: linear-gradient(180deg, rgba(17, 24, 39, 0.86), rgba(15, 23, 42, 0.72));
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 18px 48px rgba(2, 6, 23, 0.28);
+}
+
+.page-shell {
+  min-height: 100vh;
+  padding: 6rem 1rem 4rem;
+}
+
+.page-container {
+  width: 100%;
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+.page-container-wide {
+  width: 100%;
+  max-width: 80rem;
+  margin: 0 auto;
+}
+
+.section-title {
+  color: #e6edf3;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.muted-copy {
+  color: var(--text-muted);
+}
+
+.icon-tile {
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Gradient text */
@@ -76,4 +122,26 @@ body {
 .dropzone-active {
   border-color: var(--forest) !important;
   background: rgba(45,140,78,0.05) !important;
+}
+
+button, a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid var(--forest-light);
+  outline-offset: 3px;
+}
+
+@media (max-width: 640px) {
+  .page-shell {
+    padding: 5.5rem 1rem 3rem;
+  }
+
+  .recharts-wrapper,
+  .recharts-surface {
+    max-width: 100%;
+  }
 }
