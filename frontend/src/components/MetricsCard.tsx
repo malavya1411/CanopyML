@@ -19,7 +19,7 @@ export const MetricsCard: React.FC<MetricsCardProps> = ({
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ delay, duration: 0.4 }}
-    className="surface p-5 hover:border-white/20 transition-all duration-300 group"
+    className="surface p-6 hover:border-white/20 transition-all duration-300 group max-sm:p-5"
   >
     <div className="flex items-start justify-between gap-4">
       <div className="min-w-0 flex-1">
@@ -50,7 +50,7 @@ export const MetricsCard: React.FC<MetricsCardProps> = ({
 
 // Skeleton variant
 export const MetricsCardSkeleton: React.FC = () => (
-  <div className="surface p-5">
+  <div className="surface p-6 max-sm:p-5">
     <div className="skeleton h-3 w-24 mb-3" />
     <div className="skeleton h-9 w-32 mb-2" />
     <div className="skeleton h-0.5 w-full mt-3" />

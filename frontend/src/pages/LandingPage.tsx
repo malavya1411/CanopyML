@@ -58,7 +58,7 @@ export const LandingPage: React.FC = () => {
       </div>
 
       {/* ── HERO SECTION ── */}
-      <section className="relative z-10 flex min-h-[760px] w-full flex-col items-center justify-center px-6 pb-24 pt-36">
+      <section className="relative z-10 flex min-h-[760px] w-full flex-col items-center justify-center px-6 pb-24 pt-36 max-sm:px-4 max-sm:pb-12 max-sm:pt-28">
 
         {/* Inner centered container, constrains content width */}
         <div className="mx-auto flex w-full max-w-[920px] flex-col items-center text-center">
@@ -150,16 +150,16 @@ export const LandingPage: React.FC = () => {
       {/* ── FEATURES SECTION ── */}
       <section className="content-band relative z-10 border-t border-white/5">
         <div className="content-inner">
-          <div className="mb-4 text-center">
+          <div className="mb-2 text-center">
             <h2 className="text-4xl font-bold tracking-tight text-[#F8FAFC]">Everything You Need</h2>
           </div>
-          <div className="mb-14 text-center">
+          <div className="mb-12 text-center">
             <p className="text-[#94A3B8] text-lg max-w-xl mx-auto font-medium">
               Research-grade AI tools for satellite imagery analysis.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3">
             {FEATURES.map(({ icon: Icon, title, desc }, i) => (
               <motion.div
                 key={title}
@@ -168,7 +168,7 @@ export const LandingPage: React.FC = () => {
                 viewport={{ once: true, margin: '-50px' }}
                 transition={{ duration: 0.5, delay: i * 0.08 }}
                 whileHover={{ y: -6, borderColor: 'rgba(16, 185, 129, 0.25)', boxShadow: '0 12px 30px -10px rgba(0, 0, 0, 0.5)' }}
-                className="surface group flex min-h-[190px] flex-col items-start p-6 transition-all duration-300"
+                className="surface group flex min-h-[200px] flex-col items-start p-8 transition-all duration-300 max-sm:p-5"
               >
                 <div className="icon-tile mb-5 h-12 w-12 flex-shrink-0 bg-[#10B981]/10 transition-transform group-hover:scale-105">
                   <Icon size={24} className="text-[#10B981]" />
@@ -196,14 +196,14 @@ export const LandingPage: React.FC = () => {
               { step: '05', label: 'PDF Report', sub: 'Download results' },
             ].map(({ step, label, sub }, i) => (
               <React.Fragment key={step}>
-                <div className="relative flex flex-col items-center gap-2 text-center group">
+                <div className="relative flex flex-col items-center gap-4 text-center group">
                   <motion.div 
                     whileHover={{ scale: 1.1 }}
                     className="flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-[#10B981] to-[#34D399] text-sm font-bold text-white shadow-[0_0_15px_rgba(16,185,129,0.2)]"
                   >
                     {step}
                   </motion.div>
-                  <p className="font-bold text-[#F8FAFC] text-sm mt-2">{label}</p>
+                  <p className="font-bold text-[#F8FAFC] text-sm">{label}</p>
                   <p className="text-[#94A3B8] text-xs font-medium">{sub}</p>
                 </div>
                 {i < 4 && (
@@ -216,9 +216,9 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* ── FOOTER CTA SECTION ── */}
-      <section className="content-band relative z-10">
-        <div className="mx-auto w-full max-w-[900px]">
-          <div className="surface relative overflow-hidden p-8 text-center sm:p-12">
+      <section className="relative z-10 px-6 pb-24 pt-0 max-sm:px-4 max-sm:pb-12">
+        <div className="mx-auto w-full max-w-[800px]">
+          <div className="surface relative overflow-hidden p-12 text-center max-sm:p-5">
             <div className="relative z-10 flex flex-col items-center">
               <Leaf size={44} className="text-[#10B981] mb-6 animate-float" />
               <h2 className="text-3xl font-bold tracking-tight mb-4 text-[#F8FAFC] text-center">Ready to Monitor Canopy Loss?</h2>

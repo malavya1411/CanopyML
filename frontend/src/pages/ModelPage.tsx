@@ -76,7 +76,7 @@ export const ModelPage: React.FC = () => {
           )}
 
           {/* Metrics cards */}
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
             {infoLoading || metricsLoading ? (
               Array.from({ length: 4 }).map((_, i) => <MetricsCardSkeleton key={i} />)
             ) : (
@@ -91,8 +91,8 @@ export const ModelPage: React.FC = () => {
         </div>
 
         {/* Info cards row */}
-        <div className="mb-8 grid grid-cols-1 gap-4 xl:grid-cols-3">
-          <div className="surface p-5">
+        <div className="mb-8 grid grid-cols-1 gap-6 xl:grid-cols-3">
+          <div className="surface p-6 max-sm:p-5">
             <p className="text-[#8b949e] text-xs uppercase tracking-widest mb-3">Architecture</p>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between gap-4"><span className="text-[#8b949e]">Backbone</span><span className="text-right font-medium text-[#e6edf3]">ResNet50 (ImageNet)</span></div>
@@ -101,7 +101,7 @@ export const ModelPage: React.FC = () => {
               <div className="flex justify-between gap-4"><span className="text-[#8b949e]">Device</span><span className="text-right font-medium text-[#e6edf3]">{info?.device ?? '—'}</span></div>
             </div>
           </div>
-          <div className="surface p-5">
+          <div className="surface p-6 max-sm:p-5">
             <p className="text-[#8b949e] text-xs uppercase tracking-widest mb-3">Training Config</p>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between gap-4"><span className="text-[#8b949e]">Stage A lr</span><span className="text-right font-medium text-[#e6edf3]">0.001</span></div>
@@ -110,7 +110,7 @@ export const ModelPage: React.FC = () => {
               <div className="flex justify-between gap-4"><span className="text-[#8b949e]">Early Stop</span><span className="text-right font-medium text-[#e6edf3]">Patience = 5</span></div>
             </div>
           </div>
-          <div className="surface p-5">
+          <div className="surface p-6 max-sm:p-5">
             <p className="text-[#8b949e] text-xs uppercase tracking-widest mb-3">Dataset</p>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between gap-4"><span className="text-[#8b949e]">Name</span><span className="text-right font-medium text-[#e6edf3]">EuroSAT RGB</span></div>

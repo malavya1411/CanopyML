@@ -33,7 +33,7 @@ export const Dashboard: React.FC = () => {
         </motion.div>
 
         {/* Quick actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+        <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2">
           <Link to="/classify">
             <motion.div
               whileHover={{ scale: 1.01 }}
@@ -69,7 +69,7 @@ export const Dashboard: React.FC = () => {
         </div>
 
         {/* Metrics */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="mb-8 grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
           {infoLoading ? (
             Array.from({ length: 4 }).map((_, i) => <MetricsCardSkeleton key={i} />)
           ) : (
@@ -96,11 +96,11 @@ export const Dashboard: React.FC = () => {
         </div>
 
         {/* Classes grid */}
-        <div className="surface p-6 mb-8">
-          <h2 className="font-semibold text-[#e6edf3] mb-5">EuroSAT Land Cover Classes</h2>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+        <div className="surface mb-8 p-6">
+          <h2 className="mb-5 font-semibold text-[#e6edf3]">EuroSAT Land Cover Classes</h2>
+          <div className="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2 md:grid-cols-5">
             {CLASS_NAMES.map((name) => (
-              <div key={name} className="flex items-center gap-2 p-2 rounded-lg bg-white/3 hover:bg-white/6 transition-colors">
+              <div key={name} className="flex items-center gap-2 rounded-lg bg-white/3 px-4 py-2 transition-colors hover:bg-white/6">
                 <span className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: CLASS_COLORS[name] }} />
                 <span className="text-[#e6edf3] text-xs font-medium truncate">{name}</span>
               </div>
@@ -110,8 +110,8 @@ export const Dashboard: React.FC = () => {
 
         {/* System info */}
         <div className="surface p-6">
-          <h2 className="font-semibold text-[#e6edf3] mb-4">System Information</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-y-3 gap-x-6 text-sm">
+          <h2 className="mb-4 font-semibold text-[#e6edf3]">System Information</h2>
+          <div className="grid grid-cols-1 gap-x-8 gap-y-4 text-sm sm:grid-cols-2 md:grid-cols-4">
             {[
               ['API Version',    health?.version      ?? '—'],
               ['Model Version',  info?.model_version  ?? '—'],

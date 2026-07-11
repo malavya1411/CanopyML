@@ -71,9 +71,15 @@ const SECTIONS = [
   },
 ];
 
+const formatContent = (content: string) =>
+  content
+    .trim()
+    .split(/\n\s*\n/)
+    .map((paragraph) => paragraph.replace(/\s*\n\s*/g, ' ').trim());
+
 export const AboutPage: React.FC = () => (
-  <div className="page-shell">
-    <div className="mx-auto max-w-4xl">
+  <div className="min-h-screen px-6 py-12 pt-28 max-sm:px-4 max-sm:py-10 max-sm:pt-24">
+    <div className="mx-auto max-w-[900px]">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-12 text-center">
         <div className="icon-tile mx-auto mb-4 h-16 w-16 bg-gradient-to-br from-[#2d8c4e] to-[#00b4a6]">
           <Leaf size={32} className="text-white" />
@@ -84,7 +90,7 @@ export const AboutPage: React.FC = () => (
         </p>
       </motion.div>
 
-      <div className="space-y-5">
+      <div className="space-y-6">
         {SECTIONS.map(({ icon: Icon, color, title, content }, i) => (
           <motion.div
             key={title}
@@ -92,16 +98,20 @@ export const AboutPage: React.FC = () => (
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.08 }}
-            className="surface p-6"
+            className="surface p-8 max-sm:p-5"
           >
-            <div className="flex items-center gap-3 mb-3">
+            <div className="mb-4 flex items-center gap-3">
               <div className="icon-tile h-9 w-9 flex-shrink-0" style={{ background: `${color}20` }}>
                 <Icon size={18} style={{ color }} />
               </div>
               <h2 className="font-bold text-[#e6edf3] text-lg">{title}</h2>
             </div>
-            <div className="text-[#8b949e] text-sm leading-relaxed whitespace-pre-line">
-              {content}
+            <div className="text-sm text-[#8b949e]">
+              {formatContent(content).map((paragraph) => (
+                <p key={paragraph} className="mb-4 last:mb-0">
+                  {paragraph}
+                </p>
+              ))}
             </div>
           </motion.div>
         ))}
@@ -112,7 +122,7 @@ export const AboutPage: React.FC = () => (
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
-        className="surface p-6 mt-8"
+        className="surface mt-8 p-8 max-sm:p-5"
       >
         <h2 className="font-bold text-[#e6edf3] mb-4">References & Resources</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">

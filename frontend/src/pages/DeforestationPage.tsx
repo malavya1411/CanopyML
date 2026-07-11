@@ -60,7 +60,7 @@ export const DeforestationPage: React.FC = () => {
 
         {/* Upload row */}
         <div className="mb-6 grid grid-cols-1 gap-6 md:grid-cols-2">
-          <div className="surface p-5">
+          <div className="surface p-6 max-sm:p-5">
             <p className="text-xs font-semibold uppercase tracking-widest text-[#8b949e] mb-3">
               Year 1 / Baseline
             </p>
@@ -70,7 +70,7 @@ export const DeforestationPage: React.FC = () => {
               label="Upload earlier satellite image"
             />
           </div>
-          <div className="surface p-5">
+          <div className="surface p-6 max-sm:p-5">
             <p className="text-xs font-semibold uppercase tracking-widest text-[#8b949e] mb-3">
               Year 2 / Current
             </p>
@@ -120,7 +120,7 @@ export const DeforestationPage: React.FC = () => {
           {data && (
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
               {/* Stats row */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
                 {[
                   { label: 'Deforestation Events', value: data.n_deforested.toLocaleString(), color: '#ef5350' },
                   { label: 'Estimated Area',       value: `${data.area_km2.toFixed(2)} km²`, color: '#f9a825' },

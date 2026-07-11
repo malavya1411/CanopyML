@@ -30,6 +30,15 @@ body {
   overflow-x: hidden;
 }
 
+h1, h2, h3, h4, h5, h6 {
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+
+p {
+  line-height: 1.6;
+}
+
 #root {
   min-height: 100vh;
   overflow-x: hidden;
@@ -53,7 +62,7 @@ body {
 
 .content-band {
   width: 100%;
-  padding: 5rem 1.25rem;
+  padding: 80px 24px 96px;
 }
 
 .content-inner {
@@ -69,7 +78,7 @@ body {
 
 .page-shell {
   min-height: 100vh;
-  padding: 6rem 1rem 4rem;
+  padding: 104px 32px 64px;
 }
 
 .page-container {
@@ -171,17 +180,15 @@ a:focus-visible,
 
 @media (max-width: 640px) {
   .page-shell {
-    padding: 5.5rem 1rem 3rem;
+    padding: 88px 16px 48px;
+  }
+
+  .content-band {
+    padding: 48px 16px;
   }
 
   .recharts-wrapper,
   .recharts-surface {
     max-width: 100%;
-  }
-}
-
-@media (min-width: 1280px) {
-  .content-band {
-    padding-block: 6rem;
   }
 }
