@@ -47,49 +47,51 @@ export const ModelPage: React.FC = () => {
           <p className="text-[#8b949e]">ResNet50 training metrics, evaluation results, and architecture details.</p>
         </motion.div>
 
-        {/* Status banner */}
-        {info && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className={`mb-8 flex items-start gap-3 rounded-lg border p-4 ${
-              info.is_stub
-                ? 'bg-amber-500/10 border-amber-500/30'
-                : 'bg-[#2d8c4e]/10 border-[#2d8c4e]/30'
-            }`}
-          >
-            {info.is_stub
-              ? <AlertTriangle size={18} className="text-amber-400" />
-              : <CheckCircle size={18} className="text-[#3aad63]" />}
-            <div>
-              <p className={`font-medium ${info.is_stub ? 'text-amber-400' : 'text-[#3aad63]'}`}>
-                {info.is_stub ? 'Stub Model (Untrained)' : 'Trained Model Loaded'}
-              </p>
-              <p className="text-[#8b949e] text-sm">
-                {info.is_stub
-                  ? 'Run python scripts/train.py to train the model. Predictions are random until trained.'
-                  : `Running on ${info.device} | Trained on ${info.dataset_version}`}
-              </p>
-            </div>
-          </motion.div>
-        )}
-
-        {/* Metrics cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          {infoLoading || metricsLoading ? (
-            Array.from({ length: 4 }).map((_, i) => <MetricsCardSkeleton key={i} />)
-          ) : (
-            <>
-              <MetricsCard label="Test Accuracy"   value={info?.accuracy  ? `${(info.accuracy  * 100).toFixed(1)}` : 'N/A'} suffix={info?.accuracy ? '%' : ''} icon={Target}   color="#2d8c4e" delay={0}   />
-              <MetricsCard label="Precision"       value={info?.precision ? `${(info.precision * 100).toFixed(1)}` : 'N/A'} suffix={info?.precision ? '%' : ''} icon={Brain}    color="#00b4a6" delay={0.1} />
-              <MetricsCard label="Recall"          value={info?.recall    ? `${(info.recall    * 100).toFixed(1)}` : 'N/A'} suffix={info?.recall ? '%' : ''}    icon={BarChart3} color="#f9a825" delay={0.2} />
-              <MetricsCard label="F1-Score"        value={info?.f1_score  ? `${(info.f1_score  * 100).toFixed(1)}` : 'N/A'} suffix={info?.f1_score ? '%' : ''} icon={Cpu}      color="#ef5350" delay={0.3} />
-            </>
+        <div className="mb-8 space-y-6">
+          {/* Status banner */}
+          {info && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className={`flex items-start gap-3 rounded-lg border p-4 ${
+                info.is_stub
+                  ? 'bg-amber-500/10 border-amber-500/30'
+                  : 'bg-[#2d8c4e]/10 border-[#2d8c4e]/30'
+              }`}
+            >
+              {info.is_stub
+                ? <AlertTriangle size={18} className="mt-1 flex-shrink-0 text-amber-400" />
+                : <CheckCircle size={18} className="mt-1 flex-shrink-0 text-[#3aad63]" />}
+              <div className="min-w-0">
+                <p className={`font-medium ${info.is_stub ? 'text-amber-400' : 'text-[#3aad63]'}`}>
+                  {info.is_stub ? 'Stub Model (Untrained)' : 'Trained Model Loaded'}
+                </p>
+                <p className="break-words text-sm text-[#8b949e]">
+                  {info.is_stub
+                    ? 'Run python scripts/train.py to train the model. Predictions are random until trained.'
+                    : `Running on ${info.device} | Trained on ${info.dataset_version}`}
+                </p>
+              </div>
+            </motion.div>
           )}
+
+          {/* Metrics cards */}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            {infoLoading || metricsLoading ? (
+              Array.from({ length: 4 }).map((_, i) => <MetricsCardSkeleton key={i} />)
+            ) : (
+              <>
+                <MetricsCard label="Test Accuracy"   value={info?.accuracy  ? `${(info.accuracy  * 100).toFixed(1)}` : 'N/A'} suffix={info?.accuracy ? '%' : ''} icon={Target}   color="#2d8c4e" delay={0}   />
+                <MetricsCard label="Precision"       value={info?.precision ? `${(info.precision * 100).toFixed(1)}` : 'N/A'} suffix={info?.precision ? '%' : ''} icon={Brain}    color="#00b4a6" delay={0.1} />
+                <MetricsCard label="Recall"          value={info?.recall    ? `${(info.recall    * 100).toFixed(1)}` : 'N/A'} suffix={info?.recall ? '%' : ''}    icon={BarChart3} color="#f9a825" delay={0.2} />
+                <MetricsCard label="F1-Score"        value={info?.f1_score  ? `${(info.f1_score  * 100).toFixed(1)}` : 'N/A'} suffix={info?.f1_score ? '%' : ''} icon={Cpu}      color="#ef5350" delay={0.3} />
+              </>
+            )}
+          </div>
         </div>
 
         {/* Info cards row */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div className="mb-8 grid grid-cols-1 gap-4 xl:grid-cols-3">
           <div className="surface p-5">
             <p className="text-[#8b949e] text-xs uppercase tracking-widest mb-3">Architecture</p>
             <div className="space-y-2 text-sm">

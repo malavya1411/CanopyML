@@ -30,6 +30,11 @@ body {
   overflow-x: hidden;
 }
 
+#root {
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
 /* Glassmorphism utility */
 .glass {
   background: rgba(255, 255, 255, 0.04);
@@ -46,6 +51,22 @@ body {
   box-shadow: 0 18px 48px rgba(2, 6, 23, 0.28);
 }
 
+.content-band {
+  width: 100%;
+  padding: 5rem 1.25rem;
+}
+
+.content-inner {
+  width: min(100%, 1120px);
+  margin: 0 auto;
+}
+
+.stack-loose {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
 .page-shell {
   min-height: 100vh;
   padding: 6rem 1rem 4rem;
@@ -53,7 +74,7 @@ body {
 
 .page-container {
   width: 100%;
-  max-width: 72rem;
+  max-width: 86rem;
   margin: 0 auto;
 }
 
@@ -78,6 +99,19 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+}
+
+.primary-action,
+.secondary-action {
+  min-height: 2.75rem;
+  border-radius: 8px;
+  padding: 0.75rem 1.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.primary-action:disabled {
+  opacity: 0.68;
 }
 
 /* Gradient text */
@@ -143,5 +177,11 @@ a:focus-visible,
   .recharts-wrapper,
   .recharts-surface {
     max-width: 100%;
+  }
+}
+
+@media (min-width: 1280px) {
+  .content-band {
+    padding-block: 6rem;
   }
 }

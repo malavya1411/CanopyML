@@ -59,7 +59,7 @@ export const DeforestationPage: React.FC = () => {
         </motion.div>
 
         {/* Upload row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+        <div className="mb-6 grid grid-cols-1 gap-6 md:grid-cols-2">
           <div className="surface p-5">
             <p className="text-xs font-semibold uppercase tracking-widest text-[#8b949e] mb-3">
               Year 1 / Baseline
@@ -87,7 +87,7 @@ export const DeforestationPage: React.FC = () => {
           <button
             onClick={handleRun}
             disabled={!before || !after || isPending}
-            className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-red-600 to-[#e05c2e] py-3 font-semibold text-white transition-all hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+            className="primary-action flex flex-1 items-center justify-center gap-2 bg-gradient-to-r from-red-600 to-[#e05c2e] text-white transition-all hover:opacity-90 disabled:cursor-not-allowed"
           >
             {isPending ? <><Loader2 size={18} className="animate-spin" /> Analysing…</> : <><GitCompare size={18} /> Detect Deforestation</>}
           </button>
@@ -95,14 +95,14 @@ export const DeforestationPage: React.FC = () => {
             <button
               onClick={() => reportMut.mutate([before, after])}
               disabled={reportMut.isPending}
-              className="glass flex items-center justify-center gap-2 rounded-lg px-5 py-3 font-medium text-[#e6edf3] transition-all hover:border-white/25 disabled:opacity-40"
+              className="secondary-action glass flex items-center justify-center gap-2 font-medium text-[#e6edf3] transition-all hover:border-white/25 disabled:opacity-60"
             >
               {reportMut.isPending ? <Loader2 size={16} className="animate-spin" /> : <FileText size={16} />}
               PDF Report
             </button>
           )}
           {data && (
-            <button onClick={handleClear} className="glass rounded-lg px-5 py-3 text-[#8b949e] transition-colors hover:text-white">
+            <button onClick={handleClear} className="secondary-action glass px-5 py-3 text-[#8b949e] transition-colors hover:text-white">
               Clear
             </button>
           )}
@@ -175,7 +175,7 @@ export const DeforestationPage: React.FC = () => {
         </AnimatePresence>
 
         {!data && !isPending && (
-          <div className="surface flex min-h-72 flex-col items-center p-10 text-center">
+          <div className="surface flex min-h-72 flex-col items-center justify-center p-10 text-center">
             <TreePine size={56} className="text-[#8b949e] mb-4" />
             <p className="text-[#8b949e] text-lg font-medium">Upload both images to begin analysis</p>
             <p className="text-[#8b949e] text-sm mt-2">Both images must cover the same geographic area.</p>

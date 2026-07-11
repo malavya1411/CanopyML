@@ -58,10 +58,10 @@ export const LandingPage: React.FC = () => {
       </div>
 
       {/* ── HERO SECTION ── */}
-      <section className="relative z-10 w-full min-h-[90vh] flex flex-col justify-center items-center pt-[140px] pb-[120px] px-6">
+      <section className="relative z-10 flex min-h-[760px] w-full flex-col items-center justify-center px-6 pb-24 pt-36">
 
         {/* Inner centered container, constrains content width */}
-        <div className="w-full max-w-[900px] mx-auto flex flex-col items-center text-center">
+        <div className="mx-auto flex w-full max-w-[920px] flex-col items-center text-center">
 
           {/* Leaf Tag */}
           <motion.div
@@ -105,13 +105,13 @@ export const LandingPage: React.FC = () => {
           >
             <Link
               to="/classify"
-              className="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#10B981] to-[#34D399] px-8 py-3.5 text-base font-bold text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_24px_rgba(16,185,129,0.35)] active:translate-y-0"
+              className="primary-action inline-flex items-center justify-center gap-2 bg-gradient-to-r from-[#10B981] to-[#34D399] text-base text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_24px_rgba(16,185,129,0.35)] active:translate-y-0"
             >
               Try Demo — Classify Image <ArrowRight size={18} />
             </Link>
             <Link
               to="/deforestation"
-              className="glass inline-flex items-center justify-center gap-2 rounded-lg px-8 py-3.5 text-base font-bold text-[#F8FAFC] transition-all duration-300 hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/5 active:translate-y-0"
+              className="secondary-action glass inline-flex items-center justify-center gap-2 text-base text-[#F8FAFC] transition-all duration-300 hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/5 active:translate-y-0"
             >
               Detect Deforestation <GitCompare size={18} />
             </Link>
@@ -148,18 +148,18 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* ── FEATURES SECTION ── */}
-      <section className="relative z-10 w-full border-t border-white/5">
-        <div className="max-w-[1200px] mx-auto px-6 py-[120px]">
-          <div className="text-center mb-5">
+      <section className="content-band relative z-10 border-t border-white/5">
+        <div className="content-inner">
+          <div className="mb-4 text-center">
             <h2 className="text-4xl font-bold tracking-tight text-[#F8FAFC]">Everything You Need</h2>
           </div>
-          <div className="text-center mb-16">
+          <div className="mb-14 text-center">
             <p className="text-[#94A3B8] text-lg max-w-xl mx-auto font-medium">
               Research-grade AI tools for satellite imagery analysis.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
             {FEATURES.map(({ icon: Icon, title, desc }, i) => (
               <motion.div
                 key={title}
@@ -168,12 +168,12 @@ export const LandingPage: React.FC = () => {
                 viewport={{ once: true, margin: '-50px' }}
                 transition={{ duration: 0.5, delay: i * 0.08 }}
                 whileHover={{ y: -6, borderColor: 'rgba(16, 185, 129, 0.25)', boxShadow: '0 12px 30px -10px rgba(0, 0, 0, 0.5)' }}
-                className="surface group flex flex-col items-start p-8 transition-all duration-300"
+                className="surface group flex min-h-[190px] flex-col items-start p-6 transition-all duration-300"
               >
-                <div className="icon-tile mb-6 h-[52px] w-[52px] bg-[#10B981]/10 transition-transform group-hover:scale-105">
-                  <Icon size={26} className="text-[#10B981]" />
+                <div className="icon-tile mb-5 h-12 w-12 flex-shrink-0 bg-[#10B981]/10 transition-transform group-hover:scale-105">
+                  <Icon size={24} className="text-[#10B981]" />
                 </div>
-                <h3 className="text-xl font-bold text-[#F8FAFC] mb-3">{title}</h3>
+                <h3 className="mb-3 text-lg font-bold leading-tight text-[#F8FAFC]">{title}</h3>
                 <p className="text-[#94A3B8] text-sm leading-[1.6] font-medium">{desc}</p>
               </motion.div>
             ))}
@@ -182,12 +182,12 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* ── PIPELINE DIAGRAM ── */}
-      <section className="relative z-10 w-full border-t border-white/5">
-        <div className="max-w-[900px] mx-auto px-6 py-[120px] text-center">
+      <section className="content-band relative z-10 border-t border-white/5">
+        <div className="content-inner text-center">
           <h2 className="text-3xl font-bold tracking-tight mb-4 text-[#F8FAFC]">How It Works</h2>
-          <p className="text-[#94A3B8] mb-16 text-base font-medium">End-to-end pipeline from image to insight</p>
+          <p className="mb-12 text-base font-medium text-[#94A3B8]">End-to-end pipeline from image to insight</p>
           
-          <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-4">
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-5">
             {[
               { step: '01', label: 'Upload Image', sub: 'Any satellite imagery' },
               { step: '02', label: 'AI Inference', sub: 'ResNet50 classification' },
@@ -196,7 +196,7 @@ export const LandingPage: React.FC = () => {
               { step: '05', label: 'PDF Report', sub: 'Download results' },
             ].map(({ step, label, sub }, i) => (
               <React.Fragment key={step}>
-                <div className="flex flex-col items-center text-center gap-2 group">
+                <div className="relative flex flex-col items-center gap-2 text-center group">
                   <motion.div 
                     whileHover={{ scale: 1.1 }}
                     className="flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-[#10B981] to-[#34D399] text-sm font-bold text-white shadow-[0_0_15px_rgba(16,185,129,0.2)]"
@@ -207,7 +207,7 @@ export const LandingPage: React.FC = () => {
                   <p className="text-[#94A3B8] text-xs font-medium">{sub}</p>
                 </div>
                 {i < 4 && (
-                  <ArrowRight size={20} className="text-[#94A3B8]/30 hidden md:block flex-shrink-0" />
+                  <ArrowRight size={20} className="absolute hidden text-[#94A3B8]/30" />
                 )}
               </React.Fragment>
             ))}
@@ -216,8 +216,8 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* ── FOOTER CTA SECTION ── */}
-      <section className="relative z-10 w-full">
-        <div className="max-w-[900px] mx-auto px-6 py-[120px]">
+      <section className="content-band relative z-10">
+        <div className="mx-auto w-full max-w-[900px]">
           <div className="surface relative overflow-hidden p-8 text-center sm:p-12">
             <div className="relative z-10 flex flex-col items-center">
               <Leaf size={44} className="text-[#10B981] mb-6 animate-float" />
@@ -227,7 +227,7 @@ export const LandingPage: React.FC = () => {
               </p>
               <Link
                 to="/classify"
-                className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#10B981] to-[#34D399] px-8 py-3.5 font-bold text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_24px_rgba(16,185,129,0.35)] active:translate-y-0"
+                className="primary-action inline-flex items-center gap-2 bg-gradient-to-r from-[#10B981] to-[#34D399] text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_24px_rgba(16,185,129,0.35)] active:translate-y-0"
               >
                 Get Started Free <ArrowRight size={18} />
               </Link>
