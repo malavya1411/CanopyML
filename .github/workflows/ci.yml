@@ -28,7 +28,7 @@ jobs:
         # In a real scenario, this would run pytest.
         # Here we do a dry-run import check to ensure dependencies are intact.
         python -c "from backend.config import settings; print('Backend config loaded successfully')"
-        python -c "from ml.config import DATA_DIR; print('ML config loaded successfully')"
+        python -c "from ml.config import DATASET_DIR; print('ML config loaded successfully')"
 
   frontend-build:
     runs-on: ubuntu-latest
