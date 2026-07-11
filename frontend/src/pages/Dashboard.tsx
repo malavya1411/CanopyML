@@ -6,14 +6,11 @@ import { Link } from 'react-router-dom';
 import { getModelInfo, getHealth } from '../api';
 import { MetricsCard, MetricsCardSkeleton } from '../components/MetricsCard';
 import { ClassLegend } from '../components/ClassLegend';
-import { StatusBadge } from '../components/StatusBadge';
 import { PageHeader } from '../components/PageHeader';
 
 export const Dashboard: React.FC = () => {
   const { data: info,   isLoading: infoLoading }   = useQuery({ queryKey: ['model-info'],   queryFn: getModelInfo,  refetchInterval: 30_000 });
-  const { data: health, isLoading: healthLoading }  = useQuery({ queryKey: ['health'],       queryFn: getHealth,     refetchInterval: 10_000 });
-
-  const isOnline = health?.status === 'ok';
+  const { data: health }  = useQuery({ queryKey: ['health'],       queryFn: getHealth,     refetchInterval: 10_000 });
 
   const SYSTEM_INFO = [
     ['API Version',    health?.version        ?? '—'],
@@ -33,12 +30,6 @@ export const Dashboard: React.FC = () => {
           iconBg="rgba(34, 197, 94, 0.1)"
           title="Dashboard"
           subtitle="CanopyML platform overview and quick actions"
-          right={
-            <StatusBadge
-              isLoading={healthLoading}
-              isOnline={isOnline}
-            />
-          }
         />
 
         {/* ── Quick Actions ────────────────────────────────── */}

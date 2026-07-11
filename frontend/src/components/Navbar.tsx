@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink, Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Leaf, LayoutDashboard, Brain, TreePine, BarChart3, BookOpen, Menu, X, Satellite } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Leaf, LayoutDashboard, Brain, TreePine, BarChart3, BookOpen, Satellite } from 'lucide-react';
 
 const NAV_LINKS = [
   { to: '/dashboard',     label: 'Dashboard',      icon: LayoutDashboard },
@@ -12,7 +12,6 @@ const NAV_LINKS = [
 ];
 
 export const Navbar: React.FC = () => {
-  const [open, setOpen] = React.useState(false);
   const [scrolled, setScrolled] = React.useState(false);
 
   React.useEffect(() => {
@@ -152,103 +151,8 @@ export const Navbar: React.FC = () => {
             </Link>
           </div>
 
-          {/* ── Mobile Burger ────────────────────────────── */}
-          <motion.button
-            whileTap={{ scale: 0.92 }}
-            onClick={() => setOpen(!open)}
-            aria-label={open ? 'Close menu' : 'Open menu'}
-            style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              width: 40, height: 40, borderRadius: '10px',
-              background: 'rgba(255,255,255,0.05)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              color: '#a8b4a0',
-              cursor: 'pointer',
-            }}
-            className="md:hidden"
-          >
-            <AnimatePresence mode="wait" initial={false}>
-              {open ? (
-                <motion.div key="x" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.15 }}>
-                  <X size={20} />
-                </motion.div>
-              ) : (
-                <motion.div key="menu" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.15 }}>
-                  <Menu size={20} />
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.button>
         </div>
       </div>
-
-      {/* ── Mobile Drawer ─────────────────────────────────── */}
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            style={{
-              overflow: 'hidden',
-              borderTop: '1px solid rgba(34, 197, 94, 0.1)',
-              background: 'rgba(8, 14, 11, 0.97)',
-              backdropFilter: 'blur(28px)',
-            }}
-            className="md:hidden"
-          >
-            <div style={{ padding: '12px 16px 20px' }}>
-              {NAV_LINKS.map(({ to, label, icon: Icon }, i) => (
-                <motion.div
-                  key={to}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.05 }}
-                >
-                  <NavLink
-                    to={to}
-                    onClick={() => setOpen(false)}
-                    style={({ isActive }) => ({
-                      display: 'flex', alignItems: 'center', gap: '10px',
-                      padding: '11px 14px',
-                      borderRadius: '10px',
-                      fontSize: '14px',
-                      fontWeight: 500,
-                      textDecoration: 'none',
-                      marginBottom: '4px',
-                      transition: 'all 0.15s ease',
-                      color: isActive ? '#4ade80' : '#a8b4a0',
-                      background: isActive ? 'rgba(34, 197, 94, 0.08)' : 'transparent',
-                    })}
-                  >
-                    <Icon size={16} />
-                    {label}
-                  </NavLink>
-                </motion.div>
-              ))}
-              <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-                <Link
-                  to="/classify"
-                  onClick={() => setOpen(false)}
-                  style={{
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-                    padding: '12px',
-                    borderRadius: '10px',
-                    fontSize: '14px',
-                    fontWeight: 600,
-                    color: '#fff',
-                    textDecoration: 'none',
-                    background: 'linear-gradient(135deg, #1a7a4a 0%, #22c55e 100%)',
-                  }}
-                >
-                  <Satellite size={16} /> Analyse Image
-                </Link>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </motion.nav>
   );
 };
