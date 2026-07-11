@@ -80,12 +80,13 @@ export const ConfidenceChart: React.FC<ConfidenceChartProps> = ({ probabilities,
             type="category"
             dataKey="name"
             width={140}
+            interval={0}
             tick={({ x, y, payload }: { x: string | number; y: string | number; payload: { value: string } }) => (
               <text
                 x={Number(x) - 6}
                 y={Number(y)}
+                dy={3.5}
                 textAnchor="end"
-                dominantBaseline="middle"
                 fill={payload.value === predicted ? '#4ade80' : '#a8b4a0'}
                 fontSize={11}
                 fontWeight={payload.value === predicted ? 700 : 400}
