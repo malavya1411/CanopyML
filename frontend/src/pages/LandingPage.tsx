@@ -167,9 +167,9 @@ export const LandingPage: React.FC = () => {
               marginBottom: '22px',
             }}
           >
-            Monitor <span style={{ color: LT.green }}>Canopy</span>
+            Monitor <span style={{ color: '#22c55e' }}>Canopy</span>
             <br />
-            <span style={{ color: LT.green }}>Loss</span> From Space
+            <span style={{ color: '#22c55e' }}>Loss</span> From Space
           </motion.h1>
 
           {/* Subtitle */}
