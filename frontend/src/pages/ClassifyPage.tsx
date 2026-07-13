@@ -23,6 +23,9 @@ export const ClassifyPage: React.FC = () => {
 
   const { data, isPending, isError, error, mutate, reset } = useMutation({
     mutationFn: (f: File) => classifyImage(f),
+    onSuccess: () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    },
     onError: () => toast.error('Classification failed. Is the backend running?'),
   });
 
@@ -40,6 +43,7 @@ export const ClassifyPage: React.FC = () => {
 
   const handleClear = () => {
     setFile(null); setRawFile(null); setFileDimensions(null); setIsCropping(false); reset();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
   const handleRun = () => { if (file) mutate(file); };
   const handleFileSelect = (selectedFile: File) => {
@@ -103,279 +107,400 @@ export const ClassifyPage: React.FC = () => {
           iconBg="rgba(22,163,74,0.1)"
           title="Image Classification"
           subtitle="Upload a satellite patch and get AI-powered land cover classification."
+          right={data ? (
+            <button
+              onClick={handleClear}
+              className="btn btn-secondary animate-fade-in"
+              style={{
+                borderColor: '#cbd5e1',
+                color: '#334155',
+                padding: '8px 16px',
+                fontSize: '13.5px',
+                fontWeight: 600,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+              }}
+            >
+              Classify Another Image
+            </button>
+          ) : null}
         />
 
-        {/* ══ STEP 1: Upload & Preview/Edit ══════════════════ */}
-        <motion.div
-          initial={{ opacity: 0, y: -16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <div className="surface" style={{ padding: '24px', textAlign: 'left' }}>
-            <h2 style={{ fontFamily: "var(--font-display)", fontSize: '24px', fontWeight: 800, color: '#0f172a', marginBottom: '6px' }}>
-              Upload Satellite Image
-            </h2>
-            <p style={{ fontSize: '14px', color: '#64748b', marginBottom: '24px' }}>
-              Supported formats: PNG, JPG, JPEG, TIF, TIFF
-            </p>
+        {data ? (
+          <>
+            {/* ══ STEP 2: Results (Rendered at top once data is available) ══ */}
+            <div style={{ textAlign: 'left', marginBottom: '16px' }}>
+              <h2 style={{ fontFamily: "var(--font-display)", fontSize: '24px', fontWeight: 800, color: '#0f172a' }}>
+                Classification Results
+              </h2>
+            </div>
 
-            {/* If a file is selected, show image preview and details side by side (2-col) to maximize spatial balance */}
-            {file ? (
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', alignItems: 'start' }}>
-                <div>
-                  <ImageDropzone onFile={handleFileSelect} file={file} onClear={handleClear} label="Drop a satellite patch here" />
-                </div>
-                
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  {/* Optional crop button */}
-                  <button
-                    type="button"
-                    onClick={() => { setRawFile(file); setIsCropping(true); }}
-                    className="btn btn-secondary"
-                    style={{ width: '100%', height: '42px', fontSize: '13.5px', display: 'flex', gap: '7px', alignItems: 'center', justifyContent: 'center', borderColor: '#cbd5e1', color: '#334155' }}
-                  >
-                    <Crop size={14} /> Crop 64×64 Patch (Optional)
-                  </button>
-
-                  {/* Redesigned Large image warning card */}
-                  {fileDimensions && (fileDimensions.width > 64 || fileDimensions.height > 64) && (
-                    <div style={{
-                      padding: '16px 20px',
-                      borderRadius: '12px',
-                      background: '#ffffff',
-                      border: '1px solid #e2e8f0',
-                      borderLeft: '4px solid #d97706',
-                    }}>
-                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-                        <AlertTriangle size={18} color="#d97706" style={{ flexShrink: 0, marginTop: '2px' }} />
-                        <div style={{ flex: 1 }}>
-                          <p style={{ color: '#d97706', fontWeight: 600, fontSize: '14px', marginBottom: '4px' }}>
-                            Large Image Detected ({fileDimensions.width}×{fileDimensions.height})
-                          </p>
-                          <p style={{ fontSize: '13px', color: '#475569', lineHeight: 1.6, marginBottom: '16px' }}>
-                            The model is trained on 64×64 patches. Resizing this large image directly causes scaling distortion.
-                          </p>
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
-                            <button
-                              type="button"
-                              onClick={() => { setRawFile(file); setIsCropping(true); }}
-                              className="btn btn-secondary"
-                              style={{ width: '100%', fontSize: '13px', height: '38px', borderColor: '#cbd5e1', color: '#334155', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
-                            >
-                              <Crop size={14} /> Manual Crop
-                            </button>
-                            <button
-                              type="button"
-                              onClick={handleAutoCropCenter}
-                              className="btn btn-secondary"
-                              style={{ width: '100%', fontSize: '13px', height: '38px', borderColor: '#cbd5e1', color: '#334155', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
-                            >
-                              Auto-Crop Center
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Redesigned Stub model warning */}
-                  {data?.is_stub_model && (
-                    <div style={{
-                      padding: '12px 16px',
-                      borderRadius: '12px',
-                      background: '#ffffff',
-                      border: '1px solid #e2e8f0',
-                      borderLeft: '4px solid #d97706',
-                    }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <AlertTriangle size={16} color="#d97706" style={{ flexShrink: 0 }} />
-                        <p style={{ fontSize: '13px', color: '#d97706', margin: 0, fontWeight: 500 }}>
-                          Untrained stub model — predictions are random. Run <code style={{ fontSize: '12px', background: '#f1f5f9', padding: '2px 6px', borderRadius: '4px' }}>python scripts/train.py</code>.
-                        </p>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Classify button */}
-                  <button
-                    onClick={handleRun}
-                    disabled={!file || isPending}
-                    className="btn btn-primary"
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              gap: '32px',
+              alignItems: 'start',
+              marginBottom: '40px',
+            }}>
+              {/* Annotated Result Panel */}
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <div className="surface" style={{ padding: '24px', minHeight: '420px', display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
+                  <h3 style={{ fontFamily: "var(--font-body)", fontSize: '16px', fontWeight: 600, color: '#0f172a', marginBottom: '16px' }}>
+                    Annotated Result
+                  </h3>
+                  <div
+                    onClick={() => setShowResultLightbox(true)}
                     style={{
                       width: '100%',
-                      marginTop: '8px',
-                      height: '46px',
-                      fontSize: '14px',
+                      borderRadius: '12px',
+                      overflow: 'hidden',
+                      border: '1px solid #e2e8f0',
+                      cursor: 'zoom-in',
+                      background: '#f8fafc',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      gap: '8px',
-                      transition: 'all 0.2s ease',
+                      aspectRatio: '4/3',
+                      position: 'relative',
                     }}
-                    onMouseEnter={e => e.currentTarget.style.filter = 'brightness(0.9)'}
-                    onMouseLeave={e => e.currentTarget.style.filter = 'none'}
+                    className="group"
                   >
-                    {isPending ? (
-                      <>
-                        <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} />
-                        Classifying…
-                      </>
-                    ) : (
-                      <>
-                        <Brain size={16} />
-                        Classify Image
-                      </>
-                    )}
-                  </button>
-
-                  {isError && (
-                    <p style={{ marginTop: '8px', color: '#dc2626', fontSize: '13px', textAlign: 'center', fontWeight: 500 }}>
-                      Error: {(error as Error)?.message || 'Unknown error'}
-                    </p>
-                  )}
-                </div>
-              </div>
-            ) : (
-              // Simple dropzone if no file is selected
-              <ImageDropzone onFile={handleFileSelect} file={file} onClear={handleClear} label="Drop a satellite patch here" />
-            )}
-          </div>
-        </motion.div>
-
-        {/* Subtle section divider with 32px minimum whitespace */}
-        <div style={{ margin: '40px 0', borderTop: '1px solid #e2e8f0' }} />
-
-        {/* ══ STEP 2: Results ════════════════════════════════ */}
-        <div style={{ textAlign: 'left', marginBottom: '16px' }}>
-          <h2 style={{ fontFamily: "var(--font-display)", fontSize: '24px', fontWeight: 800, color: '#0f172a' }}>
-            Classification Results
-          </h2>
-        </div>
-
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: '32px',
-          alignItems: 'start',
-          marginBottom: '40px',
-        }}>
-
-          {/* ╔══════════════════════════════════════════════╗
-              ║  COL 1 — Annotated Result                    ║
-              ╚══════════════════════════════════════════════╝ */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <div className="surface" style={{ padding: '24px', minHeight: '420px', display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
-              <h3 style={{ fontFamily: "var(--font-body)", fontSize: '16px', fontWeight: 600, color: '#0f172a', marginBottom: '16px' }}>
-                Annotated Result
-              </h3>
-
-              <AnimatePresence mode="wait">
-                {data?.annotated_image ? (
-                  <motion.div
-                    key="annotated"
-                    initial={{ opacity: 0, scale: 0.97 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0 }}
-                    style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
-                  >
-                    {/* Zoom-on-hover image container */}
-                    <div
-                      onClick={() => setShowResultLightbox(true)}
+                    <img
+                      src={`data:image/png;base64,${data.annotated_image}`}
+                      alt="Annotated satellite image"
                       style={{
                         width: '100%',
-                        borderRadius: '12px',
-                        overflow: 'hidden',
+                        height: '100%',
+                        objectFit: 'cover',
+                        display: 'block',
+                        transition: 'transform 0.3s ease',
+                      }}
+                      className="group-hover:scale-105"
+                    />
+                    
+                    {/* Hover eye overlay */}
+                    <div style={{
+                      position: 'absolute', inset: 0,
+                      background: 'rgba(15, 23, 42, 0.2)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      opacity: 0,
+                      transition: 'opacity 0.2s ease',
+                    }}
+                    className="group-hover:opacity-100"
+                    >
+                      <div style={{
+                        padding: '8px 12px',
+                        borderRadius: '20px',
+                        background: '#ffffff',
                         border: '1px solid #e2e8f0',
-                        cursor: 'zoom-in',
-                        background: '#f8fafc',
+                        display: 'flex', alignItems: 'center', gap: '6px',
+                        fontSize: '12px', fontWeight: 600, color: '#0f172a',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                      }}>
+                        <Maximize2 size={12} />
+                        Zoom Image
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'flex-start' }}>
+                    <div style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '10px 18px',
+                      borderRadius: '24px',
+                      background: '#ecfdf5',
+                      border: '1.5px solid #a7f3d0',
+                      color: '#065f46',
+                      fontSize: '14px',
+                      fontWeight: 700,
+                    }}>
+                      <CheckCircle2 size={16} color="#059669" />
+                      <span>Prediction: <strong>{data.predicted_class}</strong></span>
+                      <span style={{ color: '#047857', opacity: 0.5 }}>|</span>
+                      <span>Confidence: <strong>{confidence_pct}%</strong></span>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Class Probabilities Panel */}
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <div className="surface" style={{ padding: '24px', minHeight: '420px', display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
+                  <h3 style={{ fontFamily: "var(--font-body)", fontSize: '16px', fontWeight: 600, color: '#0f172a', marginBottom: '16px' }}>
+                    Class Probabilities
+                  </h3>
+                  <div style={{ marginBottom: '24px', borderBottom: '1px solid #f1f5f9', paddingBottom: '16px' }}>
+                    <span style={{ fontSize: '13px', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                      Confidence Score
+                    </span>
+                    <div style={{ fontSize: '48px', fontWeight: 800, color: '#10b981', fontFamily: "var(--font-display)", lineHeight: 1.1, marginTop: '4px' }}>
+                      {confidence_pct}%
+                    </div>
+                  </div>
+
+                  <div style={{ flex: 1 }}>
+                    <ConfidenceChart probabilities={data.probabilities} predicted={data.predicted_class} />
+                  </div>
+
+                  <div style={{ marginTop: '24px', borderTop: '1px solid #f1f5f9', paddingTop: '20px' }}>
+                    <button
+                      onClick={() => file && reportMut.mutate(file)}
+                      disabled={reportMut.isPending || !file}
+                      className="btn btn-secondary"
+                      style={{
+                        width: '100%',
+                        height: '42px',
+                        fontSize: '13.5px',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        aspectRatio: '4/3',
-                        position: 'relative',
+                        gap: '8px',
+                        borderColor: '#cbd5e1',
+                        color: '#334155',
+                        transition: 'all 0.15s ease',
                       }}
-                      className="group"
                     >
-                      <img
-                        src={`data:image/png;base64,${data.annotated_image}`}
-                        alt="Annotated satellite image"
-                        style={{
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'cover',
-                          display: 'block',
-                          transition: 'transform 0.3s ease',
-                        }}
-                        className="group-hover:scale-105"
-                      />
-                      
-                      {/* Hover eye overlay */}
-                      <div style={{
-                        position: 'absolute', inset: 0,
-                        background: 'rgba(15, 23, 42, 0.2)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        opacity: 0,
-                        transition: 'opacity 0.2s ease',
+                      {reportMut.isPending ? (
+                        <>
+                          <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} />
+                          Generating PDF Report…
+                        </>
+                      ) : (
+                        <>
+                          <FileText size={16} />
+                          Download PDF Report
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Subtle divider */}
+            <div style={{ margin: '40px 0', borderTop: '1px solid #e2e8f0' }} />
+
+            {/* ══ STEP 1: Upload & Preview/Edit (Shifted to bottom as secondary action) ══ */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              style={{ marginBottom: '40px' }}
+            >
+              <div className="surface" style={{ padding: '24px', textAlign: 'left' }}>
+                <h2 style={{ fontFamily: "var(--font-display)", fontSize: '20px', fontWeight: 800, color: '#0f172a', marginBottom: '6px' }}>
+                  Classify Another Image
+                </h2>
+                <p style={{ fontSize: '13.5px', color: '#64748b', marginBottom: '20px' }}>
+                  Need to process another land cover classification? Upload a new satellite patch below.
+                </p>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', alignItems: 'start' }}>
+                  <div>
+                    <button
+                      onClick={handleClear}
+                      className="btn btn-secondary"
+                      style={{
+                        width: '100%',
+                        height: '160px',
+                        border: '2px dashed #cbd5e1',
+                        borderRadius: '12px',
+                        background: '#f8fafc',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        gap: '12px',
                       }}
-                      className="group-hover:opacity-100"
+                    >
+                      <Brain size={32} className="text-slate-400" />
+                      <span style={{ fontSize: '14px', fontWeight: 600, color: '#475569' }}>
+                        Click to reset and upload another image
+                      </span>
+                    </button>
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', paddingTop: '16px' }}>
+                    <p style={{ fontSize: '13px', color: '#64748b', lineHeight: 1.6 }}>
+                      This will reset the current prediction session. Download your PDF report before resetting if you want to keep a record of the class probabilities.
+                    </p>
+                    <button
+                      onClick={handleClear}
+                      className="btn btn-secondary"
+                      style={{ height: '42px', fontSize: '13.5px', borderColor: '#cbd5e1', color: '#334155' }}
+                    >
+                      Reset & Upload New
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        ) : (
+          <>
+            {/* ══ STEP 1: Upload & Preview/Edit (Default top state when empty/loading) ══ */}
+            <motion.div
+              initial={{ opacity: 0, y: -16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <div className="surface" style={{ padding: '24px', textAlign: 'left' }}>
+                <h2 style={{ fontFamily: "var(--font-display)", fontSize: '24px', fontWeight: 800, color: '#0f172a', marginBottom: '6px' }}>
+                  Upload Satellite Image
+                </h2>
+                <p style={{ fontSize: '14px', color: '#64748b', marginBottom: '24px' }}>
+                  Supported formats: PNG, JPG, JPEG, TIF, TIFF
+                </p>
+
+                {file ? (
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', alignItems: 'start' }}>
+                    <div>
+                      <ImageDropzone onFile={handleFileSelect} file={file} onClear={handleClear} label="Drop a satellite patch here" />
+                    </div>
+                    
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                      <button
+                        type="button"
+                        onClick={() => { setRawFile(file); setIsCropping(true); }}
+                        className="btn btn-secondary"
+                        style={{ width: '100%', height: '42px', fontSize: '13.5px', display: 'flex', gap: '7px', alignItems: 'center', justifyContent: 'center', borderColor: '#cbd5e1', color: '#334155' }}
                       >
+                        <Crop size={14} /> Crop 64×64 Patch (Optional)
+                      </button>
+
+                      {fileDimensions && (fileDimensions.width > 64 || fileDimensions.height > 64) && (
                         <div style={{
-                          padding: '8px 12px',
-                          borderRadius: '20px',
+                          padding: '16px 20px',
+                          borderRadius: '12px',
                           background: '#ffffff',
                           border: '1px solid #e2e8f0',
-                          display: 'flex', alignItems: 'center', gap: '6px',
-                          fontSize: '12px', fontWeight: 600, color: '#0f172a',
-                          boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                          borderLeft: '4px solid #d97706',
                         }}>
-                          <Maximize2 size={12} />
-                          Zoom Image
+                          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                            <AlertTriangle size={18} color="#d97706" style={{ flexShrink: 0, marginTop: '2px' }} />
+                            <div style={{ flex: 1 }}>
+                              <p style={{ color: '#d97706', fontWeight: 600, fontSize: '14px', marginBottom: '4px' }}>
+                                Large Image Detected ({fileDimensions.width}×{fileDimensions.height})
+                              </p>
+                              <p style={{ fontSize: '13px', color: '#475569', lineHeight: 1.6, marginBottom: '16px' }}>
+                                The model is trained on 64×64 patches. Resizing this large image directly causes scaling distortion.
+                              </p>
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
+                                <button
+                                  type="button"
+                                  onClick={() => { setRawFile(file); setIsCropping(true); }}
+                                  className="btn btn-secondary"
+                                  style={{ width: '100%', fontSize: '13px', height: '38px', borderColor: '#cbd5e1', color: '#334155', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
+                                >
+                                  <Crop size={14} /> Manual Crop
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={handleAutoCropCenter}
+                                  className="btn btn-secondary"
+                                  style={{ width: '100%', fontSize: '13px', height: '38px', borderColor: '#cbd5e1', color: '#334155', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
+                                >
+                                  Auto-Crop Center
+                                </button>
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </div>
+                      )}
 
-                    {/* Status Chip predicted label below image */}
-                    <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'flex-start' }}>
-                      <div style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        padding: '10px 18px',
-                        borderRadius: '24px',
-                        background: '#ecfdf5',
-                        border: '1.5px solid #a7f3d0',
-                        color: '#065f46',
-                        fontSize: '14px',
-                        fontWeight: 700,
-                      }}>
-                        <CheckCircle2 size={16} color="#059669" />
-                        <span>Prediction: <strong>{data.predicted_class}</strong></span>
-                        <span style={{ color: '#047857', opacity: 0.5 }}>|</span>
-                        <span>Confidence: <strong>{confidence_pct}%</strong></span>
-                      </div>
+
+
+                      <button
+                        onClick={handleRun}
+                        disabled={!file || isPending}
+                        className="btn btn-primary"
+                        style={{
+                          width: '100%',
+                          marginTop: '8px',
+                          height: '46px',
+                          fontSize: '14px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '8px',
+                          transition: 'all 0.2s ease',
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.filter = 'brightness(0.9)'}
+                        onMouseLeave={e => e.currentTarget.style.filter = 'none'}
+                      >
+                        {isPending ? (
+                          <>
+                            <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} />
+                            Classifying…
+                          </>
+                        ) : (
+                          <>
+                            <Brain size={16} />
+                            Classify Image
+                          </>
+                        )}
+                      </button>
+
+                      {isError && (
+                        <p style={{ marginTop: '8px', color: '#dc2626', fontSize: '13px', textAlign: 'center', fontWeight: 500 }}>
+                          Error: {(error as Error)?.message || 'Unknown error'}
+                        </p>
+                      )}
                     </div>
-                  </motion.div>
-                ) : isPending ? (
-                  <motion.div
-                    key="loading"
-                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                    style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px' }}
-                  >
-                    <div style={{ position: 'relative' }}>
-                      <div style={{ width: 52, height: 52, borderRadius: '50%', border: '2px solid rgba(22,163,74,0.15)', borderTop: '2px solid #16a34a', animation: 'spin 1s linear infinite' }} />
-                      <Brain size={18} color="#16a34a" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }} />
-                    </div>
-                    <p style={{ fontSize: '14.5px', color: '#6b7280', fontWeight: 500 }}>Running inference…</p>
-                  </motion.div>
+                  </div>
                 ) : (
-                  <motion.div
-                    key="empty"
-                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                    style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '14px', color: '#9ca3af' }}
+                  <ImageDropzone onFile={handleFileSelect} file={file} onClear={handleClear} label="Drop a satellite patch here" />
+                )}
+              </div>
+            </motion.div>
+
+            {/* Subtle divider */}
+            <div style={{ margin: '40px 0', borderTop: '1px solid #e2e8f0' }} />
+
+            {/* ══ STEP 2: Results (Placeholder at bottom when empty/loading) ══ */}
+            <div style={{ textAlign: 'left', marginBottom: '16px' }}>
+              <h2 style={{ fontFamily: "var(--font-display)", fontSize: '24px', fontWeight: 800, color: '#0f172a' }}>
+                Classification Results
+              </h2>
+            </div>
+
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              gap: '32px',
+              alignItems: 'start',
+              marginBottom: '40px',
+            }}>
+              {/* Empty Annotated Result */}
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <div className="surface" style={{ padding: '24px', minHeight: '420px', display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
+                  <h3 style={{ fontFamily: "var(--font-body)", fontSize: '16px', fontWeight: 600, color: '#0f172a', marginBottom: '16px' }}>
+                    Annotated Result
+                  </h3>
+                  <div
+                    style={{
+                      flex: 1,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '14px',
+                      color: '#9ca3af',
+                    }}
                   >
                     <div style={{ width: 64, height: 64, borderRadius: '18px', background: 'rgba(22,163,74,0.04)', border: '1.5px dashed rgba(22,163,74,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       <ScanSearch size={28} color="#16a34a" style={{ opacity: 0.5 }} />
@@ -383,97 +508,30 @@ export const ClassifyPage: React.FC = () => {
                     <p style={{ fontSize: '14px', fontWeight: 500, color: '#9ca3af', textAlign: 'center', lineHeight: 1.6 }}>
                       Annotated output<br />appears here after classification
                     </p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          </motion.div>
+                  </div>
+                </div>
+              </motion.div>
 
-          {/* ╔══════════════════════════════════════════════╗
-              ║  COL 2 — Class Probabilities Panel           ║
-              ╚══════════════════════════════════════════════╝ */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <div className="surface" style={{ padding: '24px', minHeight: '420px', display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
-              <h3 style={{ fontFamily: "var(--font-body)", fontSize: '16px', fontWeight: 600, color: '#0f172a', marginBottom: '16px' }}>
-                Class Probabilities
-              </h3>
-
-              <AnimatePresence mode="wait">
-                {data ? (
-                  <motion.div
-                    key="chart"
-                    initial={{ opacity: 0, x: 10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0 }}
-                    style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
-                  >
-                    {/* Confidence Score Panel */}
-                    <div style={{ marginBottom: '24px', borderBottom: '1px solid #f1f5f9', paddingBottom: '16px' }}>
-                      <span style={{ fontSize: '13px', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                        Confidence Score
-                      </span>
-                      <div style={{ fontSize: '48px', fontWeight: 800, color: '#10b981', fontFamily: "var(--font-display)", lineHeight: 1.1, marginTop: '4px' }}>
-                        {confidence_pct}%
-                      </div>
-                    </div>
-
-                    {/* Ranked Vertical list */}
-                    <div style={{ flex: 1 }}>
-                      <ConfidenceChart probabilities={data.probabilities} predicted={data.predicted_class} />
-                    </div>
-
-                    {/* PDF report download button at bottom of probabilities panel */}
-                    <div style={{ marginTop: '24px', borderTop: '1px solid #f1f5f9', paddingTop: '20px' }}>
-                      <button
-                        onClick={() => file && reportMut.mutate(file)}
-                        disabled={reportMut.isPending || !file}
-                        className="btn btn-secondary"
-                        style={{
-                          width: '100%',
-                          height: '42px',
-                          fontSize: '13.5px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          gap: '8px',
-                          borderColor: '#cbd5e1',
-                          color: '#334155',
-                          transition: 'all 0.15s ease',
-                        }}
-                      >
-                        {reportMut.isPending ? (
-                          <>
-                            <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} />
-                            Generating PDF Report…
-                          </>
-                        ) : (
-                          <>
-                            <FileText size={16} />
-                            Download PDF Report
-                          </>
-                        )}
-                      </button>
-                    </div>
-                  </motion.div>
-                ) : isPending ? (
-                  <motion.div
-                    key="loading-chart"
-                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                    style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '12px', justifyContent: 'center' }}
-                  >
-                    {Array.from({ length: 8 }).map((_, i) => (
-                      <div key={i} className="skeleton" style={{ height: '24px', borderRadius: '6px', width: `${85 - i * 7}%` }} />
-                    ))}
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="empty-chart"
-                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                    style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '14px' }}
+              {/* Empty Class Probabilities */}
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <div className="surface" style={{ padding: '24px', minHeight: '420px', display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
+                  <h3 style={{ fontFamily: "var(--font-body)", fontSize: '16px', fontWeight: 600, color: '#0f172a', marginBottom: '16px' }}>
+                    Class Probabilities
+                  </h3>
+                  <div
+                    style={{
+                      flex: 1,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '14px',
+                      color: '#9ca3af',
+                    }}
                   >
                     <div style={{ width: 64, height: 64, borderRadius: '18px', background: 'rgba(22,163,74,0.04)', border: '1.5px dashed rgba(22,163,74,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       <Sparkles size={28} color="#16a34a" style={{ opacity: 0.5 }} />
@@ -481,13 +539,12 @@ export const ClassifyPage: React.FC = () => {
                     <p style={{ fontSize: '14px', fontWeight: 500, color: '#9ca3af', textAlign: 'center', lineHeight: 1.6 }}>
                       Probability scores<br />appear here after classification
                     </p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                  </div>
+                </div>
+              </motion.div>
             </div>
-          </motion.div>
-
-        </div>{/* end 2-col grid */}
+          </>
+        )}
       </div>
 
       {/* Lightbox Modal for Result Image */}
