@@ -245,7 +245,7 @@ export const ClassifyPage: React.FC = () => {
                     <span style={{ fontSize: '13px', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                       Confidence Score
                     </span>
-                    <div style={{ fontSize: '48px', fontWeight: 800, color: '#10b981', fontFamily: "var(--font-display)", lineHeight: 1.1, marginTop: '4px' }}>
+                    <div style={{ fontSize: '48px', fontWeight: 800, color: '#10b981', fontFamily: "var(--font-body)", lineHeight: 1.1, marginTop: '4px' }}>
                       {confidence_pct}%
                     </div>
                   </div>
