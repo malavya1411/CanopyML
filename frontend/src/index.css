@@ -18,12 +18,22 @@
   --green-50:   #f0fdf4;
 
   /* Backgrounds — Light */
-  --bg-base:      #f8fdf9;
+  --bg-base:      #f8fafc;
   --bg-deep:      #f0faf2;
   --bg-surface:   #ffffff;
   --bg-surface-2: rgba(255,255,255,0.85);
   --bg-hover:     rgba(22,163,74,0.04);
   --bg-active:    rgba(22,163,74,0.08);
+
+  /* Emerald Palette (Standard Tailwind style) */
+  --emerald-50:  #ecfdf5;
+  --emerald-100: #d1fae5;
+  --emerald-400: #34d399;
+  --emerald-500: #10b981;
+  --emerald-600: #059669;
+  --emerald-700: #047857;
+  --emerald-800: #065f46;
+  --emerald-900: #064e3b;
 
   /* Borders */
   --border:           rgba(0,0,0,0.07);
@@ -38,7 +48,7 @@
   --text-green:     #16a34a;
 
   /* Shadows — softer on white */
-  --shadow-card:  0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.06);
+  --shadow-card:  0 1px 3px rgba(0,0,0,0.1);
   --shadow-glow:  0 0 32px rgba(22,163,74,0.12);
   --shadow-deep:  0 8px 32px rgba(0,0,0,0.12);
 

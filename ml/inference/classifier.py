@@ -276,26 +276,8 @@ class ImageClassifier:
 
     def _annotate_single(self, image: Image.Image, cls: str,
                           conf: float, probs: np.ndarray) -> str:
-        """Draw class label + confidence bar on image, return base64 PNG."""
-        fig, (ax_img, ax_bar) = plt.subplots(1, 2, figsize=(10, 4),
-                                              gridspec_kw={"width_ratios": [1, 1.2]})
-        ax_img.imshow(image)
-        ax_img.set_title(f"Prediction: {cls}\nConfidence: {conf*100:.1f}%",
-                         fontsize=11, fontweight="bold")
-        ax_img.axis("off")
-
-        colors = [CLASS_COLORS[i] for i in range(NUM_CLASSES)]
-        sorted_idx = np.argsort(probs)[::-1]
-        ax_bar.barh(
-            [CLASS_NAMES[i] for i in sorted_idx],
-            [probs[i] * 100 for i in sorted_idx],
-            color=[colors[i] for i in sorted_idx],
-        )
-        ax_bar.set_xlabel("Probability (%)")
-        ax_bar.set_title("Class Probabilities")
-        ax_bar.axvline(x=50, color="grey", ls="--", alpha=0.4)
-        plt.tight_layout()
-        return _fig_to_base64(fig)
+        """Return base64 PNG of the image alone, without subplots/charts."""
+        return _pil_to_base64(image)
 
     def _render_landcover_map(self, grid: np.ndarray) -> str:
         cmap  = mcolors.ListedColormap(CLASS_COLORS)
