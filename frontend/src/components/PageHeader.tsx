@@ -12,7 +12,7 @@ interface PageHeaderProps {
 }
 
 export const PageHeader: React.FC<PageHeaderProps> = ({
-  icon: Icon, iconColor = '#4ade80', iconBg = 'rgba(34, 197, 94, 0.1)',
+  icon: Icon, iconColor = '#16a34a', iconBg = 'rgba(22,163,74,0.1)',
   title, subtitle, right,
 }) => (
   <motion.div
@@ -33,8 +33,8 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
           width: 48, height: 48, borderRadius: '14px', flexShrink: 0,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           background: iconBg,
-          border: `1px solid ${iconColor}25`,
-          boxShadow: `0 4px 12px ${iconColor}15`,
+          border: `1px solid ${iconColor}30`,
+          boxShadow: `0 4px 12px ${iconColor}18`,
         }}>
           <Icon size={22} color={iconColor} />
         </div>
@@ -44,13 +44,13 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
             fontSize: 'clamp(22px, 3vw, 30px)',
             fontWeight: 800,
             letterSpacing: '-0.025em',
-            color: '#eef2ec',
+            color: '#0f172a',
             marginBottom: '2px',
           }}>
             {title}
           </h1>
           {subtitle && (
-            <p style={{ fontSize: '14px', color: '#687268', fontWeight: 400 }}>
+            <p style={{ fontSize: '14px', color: '#6b7280', fontWeight: 400 }}>
               {subtitle}
             </p>
           )}

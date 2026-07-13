@@ -14,7 +14,7 @@ interface MetricsCardProps {
 
 export const MetricsCard: React.FC<MetricsCardProps> = ({
   label, value, suffix = '', subtitle, icon: Icon,
-  color = '#4ade80', delay = 0,
+  color = '#16a34a', delay = 0,
 }) => (
   <motion.div
     initial={{ opacity: 0, y: 16 }}
@@ -27,7 +27,7 @@ export const MetricsCard: React.FC<MetricsCardProps> = ({
     <div style={{
       position: 'absolute', top: 0, right: 0,
       width: 80, height: 80,
-      background: `radial-gradient(circle at 100% 0%, ${color}18 0%, transparent 70%)`,
+      background: `radial-gradient(circle at 100% 0%, ${color}10 0%, transparent 70%)`,
       borderRadius: 'inherit',
       pointerEvents: 'none',
     }} />
@@ -37,15 +37,15 @@ export const MetricsCard: React.FC<MetricsCardProps> = ({
       <div style={{
         width: 42, height: 42, borderRadius: '11px', flexShrink: 0,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        background: `${color}14`,
-        border: `1px solid ${color}25`,
+        background: `${color}12`,
+        border: `1px solid ${color}22`,
       }}>
         <Icon size={20} color={color} />
       </div>
       {/* Label */}
       <span style={{
-        fontSize: '11px', fontWeight: 600,
-        color: '#687268', letterSpacing: '0.1em',
+        fontSize: '11px', fontWeight: 700,
+        color: '#6b7280', letterSpacing: '0.1em',
         textTransform: 'uppercase',
         textAlign: 'right',
       }}>
@@ -59,7 +59,7 @@ export const MetricsCard: React.FC<MetricsCardProps> = ({
         fontFamily: "'Syne', sans-serif",
         fontSize: '32px', fontWeight: 800,
         letterSpacing: '-0.03em', lineHeight: 1,
-        color: '#eef2ec',
+        color: '#0f172a',
       }}>
         {value}
       </span>
@@ -71,7 +71,7 @@ export const MetricsCard: React.FC<MetricsCardProps> = ({
     </div>
 
     {subtitle && (
-      <p style={{ marginTop: '6px', fontSize: '12px', color: '#687268', fontWeight: 400 }}>
+      <p style={{ marginTop: '6px', fontSize: '12px', color: '#6b7280', fontWeight: 400 }}>
         {subtitle}
       </p>
     )}

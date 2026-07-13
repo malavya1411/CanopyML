@@ -26,8 +26,8 @@ export const Dashboard: React.FC = () => {
         {/* Header */}
         <PageHeader
           icon={Activity}
-          iconColor="#4ade80"
-          iconBg="rgba(34, 197, 94, 0.1)"
+          iconColor="#16a34a"
+          iconBg="rgba(22,163,74,0.1)"
           title="Dashboard"
           subtitle="CanopyML platform overview and quick actions"
         />
@@ -39,30 +39,32 @@ export const Dashboard: React.FC = () => {
         }}>
           <Link to="/classify" style={{ textDecoration: 'none' }}>
             <motion.div
-              whileHover={{ y: -3, borderColor: 'rgba(34, 197, 94, 0.25)' }}
+              whileHover={{ y: -3 }}
               className="surface"
-              style={{ padding: '28px', cursor: 'pointer', transition: 'all 0.2s ease' }}
+              style={{ padding: '28px', cursor: 'pointer', transition: 'all 0.2s ease', border: '1px solid rgba(0,0,0,0.07)' }}
+              onMouseEnter={e => (e.currentTarget as HTMLElement).style.borderColor = 'rgba(22,163,74,0.25)'}
+              onMouseLeave={e => (e.currentTarget as HTMLElement).style.borderColor = 'rgba(0,0,0,0.07)'}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                 <div style={{
                   width: 56, height: 56, borderRadius: '16px', flexShrink: 0,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  background: 'rgba(34, 197, 94, 0.1)',
-                  border: '1px solid rgba(34, 197, 94, 0.2)',
-                  boxShadow: '0 4px 12px rgba(34, 197, 94, 0.1)',
+                  background: 'rgba(22,163,74,0.1)',
+                  border: '1px solid rgba(22,163,74,0.2)',
+                  boxShadow: '0 4px 12px rgba(22,163,74,0.1)',
                 }}>
-                  <Upload size={26} color="#4ade80" />
+                  <Upload size={26} color="#16a34a" />
                 </div>
                 <div>
                   <p style={{
                     fontFamily: "'Syne', sans-serif",
                     fontSize: '17px', fontWeight: 700,
                     letterSpacing: '-0.015em',
-                    color: '#eef2ec', marginBottom: '4px',
+                    color: '#0f172a', marginBottom: '4px',
                   }}>
                     Classify Image
                   </p>
-                  <p style={{ fontSize: '13px', color: '#687268' }}>
+                  <p style={{ fontSize: '13px', color: '#6b7280' }}>
                     Upload a satellite patch for land cover classification
                   </p>
                 </div>
@@ -72,30 +74,32 @@ export const Dashboard: React.FC = () => {
 
           <Link to="/deforestation" style={{ textDecoration: 'none' }}>
             <motion.div
-              whileHover={{ y: -3, borderColor: 'rgba(249, 115, 22, 0.25)' }}
+              whileHover={{ y: -3 }}
               className="surface"
-              style={{ padding: '28px', cursor: 'pointer', transition: 'all 0.2s ease' }}
+              style={{ padding: '28px', cursor: 'pointer', transition: 'all 0.2s ease', border: '1px solid rgba(0,0,0,0.07)' }}
+              onMouseEnter={e => (e.currentTarget as HTMLElement).style.borderColor = 'rgba(234,88,12,0.25)'}
+              onMouseLeave={e => (e.currentTarget as HTMLElement).style.borderColor = 'rgba(0,0,0,0.07)'}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                 <div style={{
                   width: 56, height: 56, borderRadius: '16px', flexShrink: 0,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  background: 'rgba(249, 115, 22, 0.1)',
-                  border: '1px solid rgba(249, 115, 22, 0.2)',
-                  boxShadow: '0 4px 12px rgba(249, 115, 22, 0.1)',
+                  background: 'rgba(234,88,12,0.1)',
+                  border: '1px solid rgba(234,88,12,0.2)',
+                  boxShadow: '0 4px 12px rgba(234,88,12,0.1)',
                 }}>
-                  <TrendingDown size={26} color="#fb923c" />
+                  <TrendingDown size={26} color="#ea580c" />
                 </div>
                 <div>
                   <p style={{
                     fontFamily: "'Syne', sans-serif",
                     fontSize: '17px', fontWeight: 700,
                     letterSpacing: '-0.015em',
-                    color: '#eef2ec', marginBottom: '4px',
+                    color: '#0f172a', marginBottom: '4px',
                   }}>
                     Detect Deforestation
                   </p>
-                  <p style={{ fontSize: '13px', color: '#687268' }}>
+                  <p style={{ fontSize: '13px', color: '#6b7280' }}>
                     Compare before & after images to find forest loss
                   </p>
                 </div>
@@ -116,20 +120,20 @@ export const Dashboard: React.FC = () => {
             <>
               <MetricsCard
                 label="Model Accuracy"
-                icon={Brain} color="#22c55e" delay={0}
+                icon={Brain} color="#16a34a" delay={0}
                 value={info?.accuracy ? `${(info.accuracy * 100).toFixed(1)}` : '—'}
                 suffix={info?.accuracy ? '%' : ''}
                 subtitle={info?.is_stub ? 'Not trained yet' : 'On test set'}
               />
               <MetricsCard
                 label="Land Cover Classes"
-                icon={Database} color="#06b6d4" delay={0.08}
+                icon={Database} color="#0891b2" delay={0.08}
                 value={info?.num_classes ?? 10}
                 subtitle="EuroSAT RGB"
               />
               <MetricsCard
                 label="Device"
-                icon={Cpu} color="#f59e0b" delay={0.16}
+                icon={Cpu} color="#d97706" delay={0.16}
                 value={
                   health?.device?.includes('mps') ? 'MPS' :
                   health?.device?.includes('cuda') ? 'CUDA' : 'CPU'
@@ -139,7 +143,7 @@ export const Dashboard: React.FC = () => {
               <MetricsCard
                 label="Model Status"
                 icon={Activity}
-                color={info?.is_stub ? '#f59e0b' : '#22c55e'} delay={0.24}
+                color={info?.is_stub ? '#d97706' : '#16a34a'} delay={0.24}
                 value={info?.is_stub ? 'Stub' : 'Trained'}
                 subtitle={info?.is_trained ? 'checkpoint loaded' : 'run train.py'}
               />
@@ -160,12 +164,12 @@ export const Dashboard: React.FC = () => {
           }}>
             <div style={{
               width: 8, height: 8, borderRadius: '50%',
-              background: 'linear-gradient(135deg, #22c55e, #4ade80)',
+              background: 'linear-gradient(135deg, #16a34a, #22c55e)',
             }} />
             <h2 style={{
               fontFamily: "'Syne', sans-serif",
               fontSize: '15px', fontWeight: 700,
-              color: '#eef2ec', letterSpacing: '-0.01em',
+              color: '#0f172a', letterSpacing: '-0.01em',
             }}>
               EuroSAT Land Cover Classes
             </h2>
@@ -184,7 +188,7 @@ export const Dashboard: React.FC = () => {
           <h2 style={{
             fontFamily: "'Syne', sans-serif",
             fontSize: '15px', fontWeight: 700,
-            color: '#eef2ec', marginBottom: '20px',
+            color: '#0f172a', marginBottom: '20px',
           }}>
             System Information
           </h2>
@@ -195,10 +199,10 @@ export const Dashboard: React.FC = () => {
           }}>
             {SYSTEM_INFO.map(([k, v]) => (
               <div key={k}>
-                <p style={{ fontSize: '11px', fontWeight: 600, color: '#687268', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '4px' }}>
+                <p style={{ fontSize: '11px', fontWeight: 700, color: '#16a34a', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '4px' }}>
                   {k}
                 </p>
-                <p style={{ fontSize: '14px', fontWeight: 600, color: '#eef2ec', fontFamily: "'JetBrains Mono', monospace" }}>
+                <p style={{ fontSize: '14px', fontWeight: 600, color: '#0f172a', fontFamily: "'JetBrains Mono', monospace" }}>
                   {v}
                 </p>
               </div>
