@@ -58,7 +58,7 @@ export const Navbar: React.FC = () => {
             <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', lineHeight: 1 }}>
               <span style={{
                 fontFamily: "'Syne', sans-serif",
-                fontWeight: 700, fontSize: '16px', letterSpacing: '-0.02em',
+                fontWeight: 800, fontSize: '22px', letterSpacing: '-0.03em',
                 background: 'linear-gradient(135deg, #166534, #16a34a)',
                 WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
               }}>
