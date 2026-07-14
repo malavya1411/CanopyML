@@ -168,14 +168,17 @@ export const AboutPage: React.FC = () => {
           style={{ textAlign: 'center', marginBottom: '56px' }}
         >
           <div style={{
-            width: 80, height: 80, borderRadius: '22px',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            background: 'linear-gradient(135deg, rgba(22,163,74,0.15) 0%, rgba(22,163,74,0.08) 100%)',
-            border: '1px solid rgba(22,163,74,0.2)',
+            width: 80,
+            height: 80,
+            borderRadius: '16px',
+            overflow: 'hidden',
             margin: '0 auto 24px',
-            boxShadow: '0 8px 24px rgba(22,163,74,0.12)',
+            boxShadow: '0 4px 16px rgba(0,0,0,0.08)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}>
-            <Leaf size={36} color="#16a34a" />
+            <img src="/logo.svg" alt="CanopyML Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
           <h1 style={{
             fontFamily: "'Syne', sans-serif",

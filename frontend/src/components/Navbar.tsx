@@ -46,16 +46,16 @@ export const Navbar: React.FC = () => {
               whileHover={{ scale: 1.05, rotate: 3 }}
               whileTap={{ scale: 0.95 }}
               style={{
-                width: 34, height: 34, borderRadius: '9px',
-                background: 'linear-gradient(135deg, #166534 0%, #22c55e 100%)',
+                width: 34, height: 34, borderRadius: '8px',
+                overflow: 'hidden',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                boxShadow: '0 4px 12px rgba(22,163,74,0.28)',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
                 flexShrink: 0,
               }}
             >
-              <Leaf size={17} color="#fff" />
+              <img src="/logo.svg" alt="CanopyML Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </motion.div>
-            <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', lineHeight: 1 }}>
               <span style={{
                 fontFamily: "'Syne', sans-serif",
                 fontWeight: 700, fontSize: '16px', letterSpacing: '-0.02em',
@@ -63,9 +63,6 @@ export const Navbar: React.FC = () => {
                 WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
               }}>
                 CanopyML
-              </span>
-              <span style={{ fontSize: '9px', color: '#6b7280', letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600 }}>
-                Satellite AI
               </span>
             </div>
           </Link>

@@ -141,7 +141,7 @@ export const LandingPage: React.FC = () => {
               color: LT.green,
             }}>
               <ScanLine size={12} />
-              Research-Grade Satellite AI Platform
+              Active AI Monitoring
               <span style={{
                 width: 6, height: 6, borderRadius: '50%',
                 background: LT.greenLight,
@@ -631,8 +631,17 @@ export const LandingPage: React.FC = () => {
             }} />
 
             <div style={{ position: 'relative', zIndex: 1 }}>
-              <div style={{ display: 'inline-block', marginBottom: '20px', animation: 'float 6s ease-in-out infinite' }}>
-                <Leaf size={48} color={LT.green} />
+              <div style={{
+                display: 'inline-block',
+                width: 64,
+                height: 64,
+                borderRadius: '12px',
+                overflow: 'hidden',
+                marginBottom: '20px',
+                boxShadow: '0 4px 16px rgba(0,0,0,0.08)',
+                animation: 'float 6s ease-in-out infinite'
+              }}>
+                <img src="/logo.svg" alt="CanopyML Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               </div>
               <h2 style={{
                 fontFamily: "'Syne', sans-serif",
