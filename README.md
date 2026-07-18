@@ -67,19 +67,5 @@ Evaluates the trained model on the test set and generates confusion matrices and
 python scripts/evaluate.py
 ```
 
-## Deployment
-
-The project is fully dockerized. To run the production build locally using Docker Compose:
-
-```bash
-docker-compose up --build -d
-```
-- The frontend is served via NGINX on `http://localhost:80`.
-- The backend is available at `http://localhost:8000`.
-
-Deployment configurations are included for:
-- **Render** (`render.yaml` for FastAPI backend)
-- **Vercel** (`vercel.json` for React frontend)
-
 ## License
 MIT License
