@@ -59,7 +59,6 @@ Trains the ResNet50 model using a two-stage approach (head fine-tuning, then ful
 ```bash
 python scripts/train.py
 ```
-*(Note: A stub model is loaded automatically if you run the app without training first).*
 
 ### Evaluating the Model
 Evaluates the trained model on the test set and generates confusion matrices and learning curves:
