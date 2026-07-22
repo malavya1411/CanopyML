@@ -8,12 +8,14 @@ echo "🚀 Starting CanopyML in Development Mode..."
 
 # 1. Start FastAPI backend (Port 8000)
 echo "⚡ Starting backend (Uvicorn)..."
-source venv/bin/activate
-uvicorn backend.main:app --reload --port 8000 &
+if [ -d "venv" ]; then
+  source venv/bin/activate
+fi
+PYTHONPATH=. uvicorn apps.backend.src.main:app --reload --port 8000 &
 
 # 2. Start React frontend (Port 5173)
 echo "⚡ Starting frontend (Vite)..."
-cd frontend
+cd apps/frontend
 npm run dev &
 
 echo "✨ CanopyML is running!"

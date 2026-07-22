@@ -11,15 +11,16 @@ pip install --upgrade pip
 pip install -r requirements.txt
 
 # 2. Node Environment
-echo "📦 Setting up Node frontend..."
-cd frontend
+echo "📦 Setting up Node workspace..."
 npm install
-cd ..
+cd apps/frontend
+npm install
+cd ../..
 
 # 3. Environment variables
-if [ ! -f backend/.env ]; then
-  echo "📄 Creating default .env file..."
-  cp backend/.env.example backend/.env
+if [ ! -f apps/backend/.env ]; then
+  echo "📄 Creating default backend .env file..."
+  cp apps/backend/.env.example apps/backend/.env 2>/dev/null || true
 fi
 
 echo "✅ Setup complete! Run ./scripts/run_dev.sh to start the platform."

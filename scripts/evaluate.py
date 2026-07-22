@@ -7,11 +7,16 @@ import logging
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parent.parent))
+sys.path.insert(0, str(Path(__file__).parent.parent.resolve()))
 
-from ml.config import BATCH_SIZE, DATASET_DIR
-from ml.dataset.datamodule import EuroSATDataModule
-from ml.evaluation.evaluator import Evaluator
+try:
+    from apps.ml.config import BATCH_SIZE, DATASET_DIR
+    from apps.ml.preprocessing.datamodule import EuroSATDataModule
+    from apps.ml.postprocessing.evaluator import Evaluator
+except ImportError:
+    from ml.config import BATCH_SIZE, DATASET_DIR
+    from ml.dataset.datamodule import EuroSATDataModule
+    from ml.evaluation.evaluator import Evaluator
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s  %(message)s",
                     datefmt="%H:%M:%S")

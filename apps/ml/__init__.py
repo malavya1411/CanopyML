@@ -1,0 +1,15 @@
+"""
+CanopyML Machine Learning Package
+"""
+from __future__ import annotations
+
+import sys
+from pathlib import Path
+
+_root = str(Path(__file__).parent.parent.parent.resolve())
+_apps = str(Path(__file__).parent.parent.resolve())
+
+if _root not in sys.path:
+    sys.path.insert(0, _root)
+if _apps not in sys.path:
+    sys.path.insert(0, _apps)

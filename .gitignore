@@ -12,16 +12,29 @@ __pycache__/
 *$py.class
 venv/
 env/
-backend/.env
+.env
+*.env
+!.env.example
 .pytest_cache/
 
-# Node.js / Frontend
-frontend/node_modules/
-frontend/dist/
-frontend/.npm/
+# Node.js / Monorepo
+node_modules/
+dist/
+.npm/
+apps/frontend/node_modules/
+apps/frontend/dist/
+packages/*/node_modules/
+packages/*/dist/
 
-# CanopyML Specific Data & Outputs
+# Data, Models, & Logs
+data/logs/*
+!data/logs/.gitkeep
+data/uploads/*
+!data/uploads/.gitkeep
+data/temp/*
+!data/temp/.gitkeep
 dataset/
-models/*.pth
+models/saved_models/*.pth
+!models/saved_models/.gitkeep
 reports/*.pdf
 /tmp/canopyml_uploads/

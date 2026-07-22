@@ -3,7 +3,7 @@ FROM python:3.13-slim
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PYTHONPATH=/app \
+    PYTHONPATH=/app:/app/apps/backend/src:/app/apps/ml \
     APP_ENV=production
 
 WORKDIR /app
@@ -21,12 +21,17 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
-# Copy source code
-COPY backend/ /app/backend/
-COPY ml/ /app/ml/
+# Copy source code and packages
+COPY apps/ /app/apps/
+COPY packages/ /app/packages/
+COPY models/ /app/models/
+
+# Shim for backward compatibility entry points
+COPY apps/backend/backend /app/backend
+COPY apps/ml /app/ml
 
 # Create necessary directories for runtime
-RUN mkdir -p /app/models /app/reports /tmp/canopyml_uploads
+RUN mkdir -p /app/models /app/reports /app/data/logs /tmp/canopyml_uploads
 
 # Expose FastAPI port
 EXPOSE 8000

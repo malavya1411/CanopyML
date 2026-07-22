@@ -1,0 +1,12 @@
+{
+  "name": "@canopyml/shared",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./constants": "./constants/index.ts",
+    "./types": "./types/index.ts"
+  }
+}

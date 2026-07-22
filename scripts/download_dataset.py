@@ -8,10 +8,15 @@ import logging
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parent.parent))
+# Insert project root into sys.path
+sys.path.insert(0, str(Path(__file__).parent.parent.resolve()))
 
-from ml.config import DATASET_DIR
-from ml.dataset.download import download_eurosat
+try:
+    from apps.ml.config import DATASET_DIR
+    from apps.ml.preprocessing.download import download_eurosat
+except ImportError:
+    from ml.config import DATASET_DIR
+    from ml.dataset.download import download_eurosat
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s  %(message)s",
                     datefmt="%H:%M:%S")
