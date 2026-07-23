@@ -10,3 +10,7 @@ services:
         value: production
       - key: CORS_ORIGINS
         value: '["https://canopyml.vercel.app"]'
+      - key: OMP_NUM_THREADS
+        value: "1"
+      - key: MKL_NUM_THREADS
+        value: "1"

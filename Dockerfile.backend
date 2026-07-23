@@ -16,9 +16,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     zlib1g-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
+# Install Python dependencies (use CPU-only PyTorch to save memory and stay under 512MB RAM limit)
 COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir torch torchvision --index-url https://download.pytorch.org/whl/cpu && \
     pip install --no-cache-dir -r requirements.txt
 
 # Copy source code and packages
@@ -36,5 +37,5 @@ RUN mkdir -p /app/models /app/reports /app/data/logs /tmp/canopyml_uploads
 # Expose FastAPI port
 EXPOSE 8000
 
-# Start Uvicorn
-CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"]
+# Start Uvicorn with 1 worker to keep RAM under 512MB limit
+CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]
