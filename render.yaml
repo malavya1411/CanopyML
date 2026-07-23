@@ -10,7 +10,3 @@ services:
         value: production
       - key: CORS_ORIGINS
         value: '["https://canopyml.vercel.app"]'
-    disk:
-      name: models-and-reports
-      mountPath: /app/models
-      sizeGB: 1
