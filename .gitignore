@@ -35,6 +35,7 @@ data/temp/*
 !data/temp/.gitkeep
 dataset/
 models/saved_models/*.pth
+!models/saved_models/best_model.pth
 !models/saved_models/.gitkeep
 reports/*.pdf
 /tmp/canopyml_uploads/
